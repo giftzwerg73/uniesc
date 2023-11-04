@@ -118,10 +118,12 @@ async def system(request, ws):
                 ssid = ujdata["ssid"]
                 pw = ujdata["pw"]
                 conn = connectnsave(ssid, pw)
-                if conn:
+                if conn == True:
                     ans = "connection ok"
-                else:
+                elif conn == False:
                     ans = "connection failed"
+                elif conn == None:
+                    ans = "already connected"
             else:
                 ans = "err"   
             await ws.send(ujson.dumps({"wif":ans}))

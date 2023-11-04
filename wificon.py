@@ -130,8 +130,8 @@ def scan4ap():
 
 def connectnsave(ssid, password):
     con = do_connect(ssid, password)
-    if con == None:
-        dbgprint("Already connected")
+    if con == None: 
+        return None
     elif con == True:
         try:
             profiles = read_profiles()
@@ -143,6 +143,5 @@ def connectnsave(ssid, password):
         time.sleep(5)
         return True
     else:
-        dbgprint("Connection failed")
         return False
     
