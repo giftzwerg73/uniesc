@@ -8,7 +8,7 @@ import ujson
 from menu import menu, resetmenu
 from debug import dbgprint
 from servo import SERVOModule, servoaction
-from led import init_led, set_blink, init_obled
+from led import init_led, set_blink, init_obled, blink_obled
 from wificon import scan4ap, connectnsave
 
 # pinout 
