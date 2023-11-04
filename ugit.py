@@ -63,6 +63,7 @@ def pull(f_path,raw_url):
       print("tried to close new_file to save memory durring raw file decode")
   
 def pull_all(tree=call_trees_url,raw = raw,ignore = ignore,isconnected=False):
+  gc.collext()  
   if not isconnected:
       wlan = wificonnect() 
   os.chdir("/")
