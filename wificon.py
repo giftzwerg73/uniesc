@@ -115,7 +115,8 @@ def do_connect(ssid, password):
         time.sleep(0.1)
         print('.', end='')
     if connected:
-        print('\nConnected. Network config: ', wlan_sta.ifconfig())
+        #print('\nConnected. Network config: ', wlan_sta.ifconfig())
+        pass
     else:
         print('\nFailed. Not Connected to: ' + ssid)
     return connected
