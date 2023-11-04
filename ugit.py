@@ -13,6 +13,7 @@ import binascii
 import machine
 import time
 import network
+import gc
 
 global internal_tree
 
@@ -63,16 +64,20 @@ def pull(f_path,raw_url):
   
 def pull_all(tree=call_trees_url,raw = raw,ignore = ignore,isconnected=False):
   if not isconnected:
-      wlan = wificonnect() 
+      wlan = wificonnect()
   os.chdir('/')
+  gc.collect()
   tree = pull_git_tree()
+  gc.collect()
   internal_tree = build_internal_tree()
+  gc.collect()
   internal_tree = remove_ignore(internal_tree)
   print(' ignore removed ----------------------')
   print(internal_tree)
   log = []
   # download and save all files
   for i in tree['tree']:
+    gc.collect()
     if i['type'] == 'tree':
       try:
         os.mkdir(i['path'])
@@ -95,6 +100,7 @@ def pull_all(tree=call_trees_url,raw = raw,ignore = ignore,isconnected=False):
   if len(internal_tree) > 0:
       print(internal_tree, ' leftover!')
       for i in internal_tree:
+          gc.collect()
           os.remove(i)
           log.append(i + ' removed from int mem')
   logfile = open('ugit_log.py','w')
