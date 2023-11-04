@@ -4,6 +4,7 @@ from machine import Pin
 from time import sleep
 from debug import dbgprint
 from led import init_obled, blink_obled
+import ugit
 
 
 led = init_obled()
@@ -26,6 +27,7 @@ else:
         f.close()
         if upf is "run update":
             print("Running update now...")
+            ugit.pull_all(isconnected=True)
         else:
             pass      
     except OSError:  # open failed -> normal boot
