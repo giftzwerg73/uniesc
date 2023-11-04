@@ -100,7 +100,6 @@ def pull_all(tree=call_trees_url,raw = raw,ignore = ignore,isconnected=False):
   logfile = open('ugit_log.py','w')
   logfile.write(str(log))
   logfile.close()
-  os.remove("update.dat")
   print('resetting machine in 10 sec...')
   time.sleep(10)
   machine.reset()

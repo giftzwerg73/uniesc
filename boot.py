@@ -5,6 +5,7 @@ from time import sleep
 from debug import dbgprint
 from led import init_obled, blink_obled
 import ugit
+import os
 
 
 led = init_obled()
@@ -22,9 +23,10 @@ else:
     print("Connected. Network config: ", wlan_sta.ifconfig())
     # check for updates
     try:
-        f = open("update.dat", "r")
+        f = open('update.dat', 'r')
         upf = f.read()
         f.close()
+        os.remove('update.dat')
         if upf is "run update":
             print("Running update now...")
             ugit.pull_all(isconnected=True)
