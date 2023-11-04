@@ -131,7 +131,7 @@ async def system(request, ws):
                 f.write("run update")
                 f.close()
                 await ws.send(ujson.dumps({"ota":"ok"}))
-                time.sleep(3)
+                blink_obled(led, 0.1, 0.1, 15)
                 machine.reset()
             else:
                 await ws.send(ujson.dumps({"ota":"err"}))
