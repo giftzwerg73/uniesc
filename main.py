@@ -132,7 +132,7 @@ async def system(request, ws):
                 f.close()
                 await ws.send(ujson.dumps({"ota":"ok"}))
                 time.sleep(3)
-                machine.soft_reset()
+                machine.reset()
             else:
                 await ws.send(ujson.dumps({"ota":"err"}))
         else:
