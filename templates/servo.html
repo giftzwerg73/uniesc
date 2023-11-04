@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="author" content="MS">
+  <meta name="description" content="Universal ESC Programmer">
+  <title>ESCProg</title>
+  <link rel="icon" type="image/x-icon" href="static/favicon.ico">
+  <link rel="stylesheet" href="static/index.css">
+</head>
+<body>
+<div class="panel">
+    <nav id="topnav">
+         <a class="nav-link" href="esc.html">ESC</a>
+         <a id="logo" class="nav-link" href="servo.html">Servo</a>
+         <a class="nav-link" href="system.html">System</a>
+         <a class="nav-link" href="index.html">About</a>
+    </nav>
+    
+    <div class="slidecontainer">
+        <label for="ch1Slider" class="servo-label">CH1</label>
+        <input
+            type="range"
+            min="0"
+            max="180"
+            value="90"
+            class="slider"
+            id="ch1Slider"
+        />
+        <div>
+            <label>Value : </label>
+            <b id="ch1Value">90</b>
+        </div>
+    </div>
+      
+    <div class="slidecontainer">
+        <label for="ch2Slider" class="servo-label">CH2</label>
+        <input
+            type="range"
+            min="0"
+            max="180"
+            value="90"
+            class="slider"
+            id="ch2Slider"
+        />
+        <div>
+            <label>Value : </label>
+            <b id="ch2Value">90</b>
+        </div>
+    </div>
+      
+    <div class="slidecontainer">
+        <label for="ch3Slider" class="servo-label">CH3</label>
+        <input
+            type="range"
+            min="0"
+            max="180"
+            value="90"
+            class="slider"
+            id="ch3Slider"
+        />
+        <div>
+            <label>Value : </label>
+            <b id="ch3Value">90</b>
+        </div>
+    </div>
+      
+    </div>
+</div>  
+<script src="static/servo.js" charset="utf-8" defer></script>
+</body>
+</html>
