@@ -13,6 +13,7 @@ import binascii
 import machine
 import time
 import network
+import gc
 
 global internal_tree
 
@@ -25,7 +26,7 @@ password = "3141592653"
 # CHANGE TO YOUR REPOSITORY INFO
 # Repository must be public if no personal access token is supplied
 user = 'giftzwerg73'
-repository = 'escprog'
+repository = 'escprog\app'
 token = ''
 # Change this variable to 'master' or any other name matching your default branch
 default_branch = 'main'
@@ -149,6 +150,7 @@ def add_to_tree(dir_item):
 
 
 def get_hash(file):
+  gc.collect()
   print(file)
   o_file = open(file)
   r_file = o_file.read()
