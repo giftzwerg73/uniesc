@@ -73,7 +73,7 @@ function colorupdate(data) {
     if ("ota" in btncolorupdate) {
         var x = document.getElementById("updatebtn");
         if (btncolorupdate["ota"] == "reset") {
-           x.style.backgroundColor = #d1d1d1;
+           x.style.backgroundColor = '#d1d1d1';
         }
         if (btncolorupdate["ota"] == "new version") {
            x.style.backgroundColor = 'blue';
