@@ -251,22 +251,18 @@ def check_update_version():
         oldversion = f.read()
         f.close()
     except OSError:  # open failed -> version unknown
-        f = open('version.txt', 'w')
-        f.write('V0.00')
-        f.close()
-        oldversion = 'V0.00'
-    os.rename('version.txt', 'old_version.txt')
-    pull('version.txt', raw)
+        oldversion = 'Version:0000'
+    pull('gitver.txt', raw + 'version.txt')
     try:
-        f = open('version.txt', 'r') 
+        f = open('gitver.txt', 'r') 
         newversion = f.read()   # got new version file
         f.close()
-        os.remove('old_version.txt')
+        print(oldversion)
+        print(newversion)
         if oldversion != newversion:
             return True
         else:
             return False 
     except OSError:
-        os.rename('old_version.txt', 'version.txt')
         return None  # could not get github version 
  
