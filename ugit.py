@@ -244,3 +244,29 @@ def backup():
     backup = open('ugit.backup','w')
     backup.write(backup_text)
     backup.close()
+
+def check_update_version():
+    try:
+        f = open('version.txt', 'r')
+        oldversion = f.read()
+        f.close()
+    except OSError:  # open failed -> version unknown
+        f = open('version.txt', 'w')
+        f.write('V0.00')
+        f.close()
+        oldversion = 'V0.00'
+    os.rename('version.txt', 'old_version.txt')
+    pull('version.txt', raw)
+    try:
+        f = open('version.txt', 'r') 
+        newversion = f.read()   # got new version file
+        f.close()
+        os.remove('old_version.txt')
+        if oldversion != newversion:
+            return True
+        else:
+            return False 
+    except OSError:
+        os.rename('old_version.txt', 'version.txt')
+        return None  # could not get github version 
+ 

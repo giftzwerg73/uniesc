@@ -72,8 +72,14 @@ function colorupdate(data) {
     var btncolorupdate = JSON.parse(data);
     if ("ota" in btncolorupdate) {
         var x = document.getElementById("updatebtn");
+        if (btncolorupdate["ota"] == "new version") {
+           x.style.backgroundColor = 'blue';
+        }
         if (btncolorupdate["ota"] == "ok") {
            x.style.backgroundColor = 'green';
+        }
+         if (btncolorupdate["ota"] == "undefined") {
+           x.style.backgroundColor = 'yellow';
         }
         if (btncolorupdate["ota"] == "err") {
            x.style.backgroundColor = 'red';
