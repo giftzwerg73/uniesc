@@ -132,7 +132,6 @@ async def system(request, ws):
         elif "ota" in ujdata:
             if ujdata["ota"] == "update":
                 chk = check_update_version()
-                print(chk)
                 if chk is True:
                     f = open("update.dat", "w")
                     f.write("run update")
