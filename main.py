@@ -106,6 +106,7 @@ async def system(request, ws):
         if "wpg" in ujdata:
             if ujdata["wpg"] is "3": # websocket for system page ready
                 await ws.send(ujson.dumps({"ota":"reset"}))
+                await ws.send(ujson.dumps({"wif":"reset"}))
                 ssids = scan4ap()
                 while len(ssids):
                     scanssid = ssids.pop(0)

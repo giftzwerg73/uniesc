@@ -65,6 +65,9 @@ function colorsave(data) {
         if (btncolorsave["wif"] == "connection failed") {
            x.style.backgroundColor = 'red';
         }
+        if (btncolorsave["wif"] == "reset") {
+           x.style.backgroundColor = '#d1d1d1';
+        }
     }
 }
  
