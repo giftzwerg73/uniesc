@@ -259,10 +259,13 @@ def check_update_version():
         f.close()
         print(oldversion)
         print(newversion)
-        if oldversion != newversion:
-            return True
+        if newversion.startswith('Version:'):
+            if oldversion != newversion:
+                return True
+            else:
+                return False
         else:
-            return False 
+            return None 
     except OSError:
         return None  # could not get github version 
  
