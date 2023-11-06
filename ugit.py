@@ -62,7 +62,7 @@ def pull(f_path,raw_url):
     except:
       print('tried to close new_file to save memory durring raw file decode')
   
-def pull_all(tree=call_trees_url,raw = raw,ignore = ignore,isconnected=False):
+def pull_all(tree=call_trees_url,raw = raw,ignore = ignore,isconnected=False,reboot=True):
   if not isconnected:
       wlan = wificonnect()
   os.chdir('/')
@@ -106,9 +106,10 @@ def pull_all(tree=call_trees_url,raw = raw,ignore = ignore,isconnected=False):
   logfile = open('ugit_log.py','w')
   logfile.write(str(log))
   logfile.close()
-  print('resetting machine in 10 sec...')
-  time.sleep(10)
-  machine.reset()
+  if reboot:
+      print('resetting machine in 10 sec...')
+      time.sleep(10)
+      machine.reset()
   #return check instead return with global
 
 def wificonnect(ssid=ssid,password=password):
@@ -259,6 +260,7 @@ def check_update_version():
         f.close()
         print(oldversion)
         print(newversion)
+        os.remove('gitver.txt')
         if newversion.startswith('Version:'):
             if oldversion != newversion:
                 return True
