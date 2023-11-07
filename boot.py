@@ -34,7 +34,7 @@ else:
                 ugit.pull_all(isconnected=True,reboot=False)
                 blink_obled(led, 0.1, 0.1, 0)
             elif chk is False:
-                blink_obled(led, 0.1, 0.1, 3)
+                blink_obled(led, 0.1, 0.2, 3)
         else:
             pass      
     except OSError:  # open failed -> normal boot

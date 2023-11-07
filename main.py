@@ -105,8 +105,8 @@ async def system(request, ws):
         dbgprint(ujdata)
         if "wpg" in ujdata:
             if ujdata["wpg"] is "3": # websocket for system page ready
-                await ws.send(ujson.dumps({"ota":"reset"}))
-                await ws.send(ujson.dumps({"wif":"reset"}))
+                await ws.send(ujson.dumps({"ota":"btngrey"}))
+                await ws.send(ujson.dumps({"wif":"btngrey"}))
                 ssids = scan4ap()
                 while len(ssids):
                     scanssid = ssids.pop(0)
@@ -123,11 +123,11 @@ async def system(request, ws):
                 pw = ujdata["pw"]
                 conn = connectnsave(ssid, pw)
                 if conn == True:
-                    ans = "connection ok"
+                    ans = "btngreen"
                 elif conn == False:
-                    ans = "connection failed"
+                    ans = "btnred"
                 elif conn == None:
-                    ans = "already connected"
+                    ans = "btngrey"
             else:
                 ans = "err"   
             await ws.send(ujson.dumps({"wif":ans}))
@@ -136,11 +136,11 @@ async def system(request, ws):
                 f = open("update.dat", "w")
                 f.write("run update")
                 f.close()
-                await ws.send(ujson.dumps({"ota":"new version"}))
-                blink_obled(led, 0.1, 0.2, 10)
+                await ws.send(ujson.dumps({"ota":"btnblue"}))
+                blink_obled(led, 0.1, 0.2, 3)
                 machine.reset()
             else:
-                await ws.send(ujson.dumps({"ota":"err"}))
+                await ws.send(ujson.dumps({"ota":"btnred"}))
         else:
             await ws.send(ujson.dumps({"sys":"err"}))
         obled.off()

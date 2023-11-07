@@ -59,13 +59,13 @@ function colorsave(data) {
     var btncolorsave = JSON.parse(data);
     if ("wif" in btncolorsave) {
         var x = document.getElementById("savebtn");
-        if (btncolorsave["wif"] == "connection ok") {
+        if (btncolorsave["wif"] == "btngreen") {
            x.style.backgroundColor = 'green';
         }
-        if (btncolorsave["wif"] == "connection failed") {
+        if (btncolorsave["wif"] == "btnred") {
            x.style.backgroundColor = 'red';
         }
-        if (btncolorsave["wif"] == "reset") {
+        if (btncolorsave["wif"] == "btngrey") {
            x.style.backgroundColor = '#d1d1d1';
         }
     }
@@ -75,19 +75,19 @@ function colorupdate(data) {
     var btncolorupdate = JSON.parse(data);
     if ("ota" in btncolorupdate) {
         var x = document.getElementById("updatebtn");
-        if (btncolorupdate["ota"] == "reset") {
+        if (btncolorupdate["ota"] == "btngrey") {
            x.style.backgroundColor = '#d1d1d1';
         }
-        if (btncolorupdate["ota"] == "new version") {
+        if (btncolorupdate["ota"] == "btnblue") {
            x.style.backgroundColor = 'blue';
         }
-        if (btncolorupdate["ota"] == "ok") {
+        if (btncolorupdate["ota"] == "btngreen") {
            x.style.backgroundColor = 'green';
         }
-         if (btncolorupdate["ota"] == "undefined") {
+         if (btncolorupdate["ota"] == "btnyellow") {
            x.style.backgroundColor = 'yellow';
         }
-        if (btncolorupdate["ota"] == "err") {
+        if (btncolorupdate["ota"] == "btnred") {
            x.style.backgroundColor = 'red';
         }
     }
