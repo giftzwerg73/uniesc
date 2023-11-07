@@ -10,7 +10,7 @@ from debug import dbgprint
 from servo import SERVOModule, servoaction
 from led import init_led, set_blink, init_obled, blink_obled
 from wificon import scan4ap, connectnsave
-from ugit import check_update_version
+
     
 
 # pinout 
@@ -133,19 +133,12 @@ async def system(request, ws):
             await ws.send(ujson.dumps({"wif":ans}))
         elif "ota" in ujdata:
             if ujdata["ota"] == "update":
-                chk = check_update_version()
-                gc.collect()
-                if chk is True:
-                    f = open("update.dat", "w")
-                    f.write("run update")
-                    f.close()
-                    await ws.send(ujson.dumps({"ota":"new version"}))
-                    blink_obled(led, 0.1, 0.2, 0)
-                    #machine.reset()
-                elif chk is False:
-                    await ws.send(ujson.dumps({"ota":"ok"}))
-                elif chk is None:
-                    await ws.send(ujson.dumps({"ota":"undefined"}))
+                f = open("update.dat", "w")
+                f.write("run update")
+                f.close()
+                await ws.send(ujson.dumps({"ota":"new version"}))
+                blink_obled(led, 0.1, 0.2, 10)
+                machine.reset()
             else:
                 await ws.send(ujson.dumps({"ota":"err"}))
         else:

@@ -28,9 +28,11 @@ else:
         f.close()
         os.remove('update.dat')
         if upf is "run update":
-            print("Running update now...")
-            ugit.pull_all(isconnected=True,reboot=False)
-            blink_obled(led, 0.1, 0.1, 0)
+            chk = ugit.check_update_version()
+            if chk is True:
+                print("Running update now...")
+                ugit.pull_all(isconnected=True,reboot=False)
+                blink_obled(led, 0.1, 0.1, 0)
         else:
             pass      
     except OSError:  # open failed -> normal boot
