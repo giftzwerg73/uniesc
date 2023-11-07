@@ -140,8 +140,8 @@ async def system(request, ws):
                     f.write("run update")
                     f.close()
                     await ws.send(ujson.dumps({"ota":"new version"}))
-                    blink_obled(led, 0.1, 0.1, 15)
-                    machine.reset()
+                    blink_obled(led, 0.1, 0.2, 0)
+                    #machine.reset()
                 elif chk is False:
                     await ws.send(ujson.dumps({"ota":"ok"}))
                 elif chk is None:
