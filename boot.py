@@ -32,12 +32,9 @@ else:
             if chk is True:
                 print("Running update now...")
                 ugit.pull_all(isconnected=True,reboot=False)
-                blink_obled(led, 0.1, 0.1, 0)
-            elif chk is False:
-                blink_obled(led, 0.1, 0.2, 3)
-        else:
-            pass      
+                blink_obled(led, 0.1, 0.1, 0)    
     except OSError:  # open failed -> normal boot
         pass
-    blink_obled(led, 0.15, 0.5, 3)
+    
+    blink_obled(led, 0.1, 0.2, 3)
       
