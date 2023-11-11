@@ -117,7 +117,7 @@ async def system(request, ws):
                 rmonlyssids = []
                 for ssid in savedssid:
                   if ssid not in scanssids:
-                    rmonlyssids.append("rm) " + ssid)
+                    rmonlyssids.append(ssid + " *")
                 ssids = []
                 # from scan 
                 for ssid in scanssids:
@@ -137,7 +137,7 @@ async def system(request, ws):
                   # remove from wifi.dat
                   selssid = ujdata["ssid"]
                   if selssid in rmonlyssids:
-                     selssid = selssid[4:]
+                     selssid = selssid[:-2]
                   if selssid in savedssid:
                       btncolor = "btngreen"
                   else:
