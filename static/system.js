@@ -139,6 +139,31 @@ function fnbtnsave() {
   console.log("Button Connect");
 }
 
+function fnbtnremove() {
+  let customssid = document.getElementById("customssid").value;
+  let selectssid = document.getElementById("selectssid").value;
+  let pw = document.getElementById("pw").value;
+  console.log(customssid);
+  console.log(selectssid);
+  console.log(pw);
+  var ssid = ""
+  if (!isEmpty(customssid)) {
+      ssid = customssid;
+  }
+  if (!isEmpty(selectssid)) {
+      ssid = selectssid;
+  }
+  
+  sendMessage(
+    JSON.stringify({
+      "wif": "remove",
+      "ssid": ssid,
+      "pw": pw,
+    })
+  );
+  console.log("Button Remove");
+}
+
 function fnbtnota() {
   sendMessage(JSON.stringify({"ota":"update"}));
   console.log("Button Update");

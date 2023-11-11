@@ -20,7 +20,8 @@ network.country('DE')
 network.hostname(hostnm)
 wlan_ap = network.WLAN(network.AP_IF)
 wlan_sta = network.WLAN(network.STA_IF)
-
+wlan_status = None
+ 
 server_socket = None
 
 
@@ -144,4 +145,21 @@ def connectnsave(ssid, password):
         return True
     else:
         return False
+ 
+ 
+def set_wlan_status(stat):
+     global wlan_status
+     wlan_status = stat
+ 
+def get_wlan_status():
+     global wlan_status
+     return wlan_status
     
+def get_known_stations():
+    try:
+        profiles = read_profiles()
+    except OSError:
+        profiles = {}
+    return profiles
+    
+     
