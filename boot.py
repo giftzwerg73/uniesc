@@ -15,12 +15,16 @@ if wlan_sta is None:
     # open ap
     wlan_ap = wificon.run_ap()
     print(wlan_ap)
-    print("AP up. Network config: ", wlan_ap.ifconfig())
+    ifconf = wlan_ap.ifconfig()
+    print("AP up. Network config: ", ifconf)
+    wificon.set_wlan_status(["AP", ifconf])
     blink_obled(led, 0.5, 0.5, 2)
 else:
     # connected to ap
     print(wlan_sta)
-    print("Connected. Network config: ", wlan_sta.ifconfig())
+    ifconf = wlan_sta.ifconfig()
+    print("Connected. Network config: ", ifconf)
+    wificon.set_wlan_status(["STA", ifconf])
     # check for updates
     try:
         f = open('update.dat', 'r')

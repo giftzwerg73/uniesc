@@ -33,7 +33,6 @@
               toggleField(this,this.nextSibling);
               this.selectedIndex='0';
             }">
-            <option>Scanning...</option>
             <option></option>
             <option value="customOption">Enter custom SSID</option>
        </select><input name="customssid" id="customssid" style="font-size: 20px; width: 100%; display:none;" disabled="disabled" 
@@ -41,8 +40,9 @@
        <label for="pw">Enter Password:</label>
        <input name="pw" id="pw" style="font-size: 20px; width: 100%;">
     </div>   
-    <div class="btnblock" id="savebtn">
-        <button style="width: 70%;" onclick="fnbtnsave()">Save SSID</button> 
+    <div class="btnblock" id="wifibtn">
+        <button style="width: 45%;" onclick="fnbtnscan()">Scan</button> 
+        <button style="width: 45%;" onclick="fnbtnsave()">Connect</button> 
     </div>
     <h1>Check for Updates</h1>
     <div class="btnblock" id="updatebtn">
