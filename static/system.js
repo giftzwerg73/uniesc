@@ -30,77 +30,66 @@ function onClose(event) {
 }
 function onMessage(event) {
   console.log("WebSocket message received:", event);
-  updateSSID(event.data);
-  colorsave(event.data);
-  colorupdate(event.data);
+  get_message(event.data);
 }
 
 function sendMessage(message) {
   websocket.send(message);
 }
 
-function updateSSID(data) {
-   var x = document.getElementById("selectssid");
-   var opt = document.createElement("option");
-   var ssidtxt = JSON.parse(data);
-   if ("wif" in ssidtxt) {
-     if (ssidtxt["wif"] == "scan start") {
-       // remove old scan
-       var len = x.length - 1;
-       for(var i=len; i>1; i--) {
-         console.log("remove option: ", x[i]);
-         x.remove(i);
-       }
-     }
-   }
-   if ("sid" in ssidtxt) {
-     opt.text = ssidtxt["sid"]
-     console.log("add option: ", opt);
-     x.add(opt);
-     
-   }
-}
-
-function colorsave(data) {
-    var btncolorwifi = JSON.parse(data);
-    if ("wifcol" in btncolorwifi) {
-        var x = document.getElementById("wifibtn");
-        if (btncolorwifi["wifcol"] == "btngreen") {
-           x.style.backgroundColor = 'green';
-        }
-        if (btncolorwifi["wifcol"] == "btnred") {
-           x.style.backgroundColor = 'red';
-        }
-        if (btncolorwifi["wifcol"] == "btnyellow") {
-           x.style.backgroundColor = 'yellow';
-        }
-        if (btncolorwifi["wifcol"] == "btngrey") {
-           x.style.backgroundColor = '#d1d1d1';
-        }
-        if (btncolorwifi["wifcol"] == "btnblue") {
-           x.style.backgroundColor = 'blue';
+function get_message(data) {
+    var selssid = document.getElementById("selectssid");
+    var opt = document.createElement("option");
+    var wifbtn = document.getElementById("wifibtn");
+    var updbtn = document.getElementById("updatebtn");
+    var msg = JSON.parse(data);
+    if ("wif" in msg) {     
+        if (msg["wif"] == "scan start") {
+            // remove old scan
+            var len = selssid.length - 1;
+            for(var i=len; i>1; i--) {
+                console.log("remove option: ", selssid[i]);
+                selssid.remove(i);
+            }
         }
     }
-}
- 
-function colorupdate(data) {
-    var btncolorupdate = JSON.parse(data);
-    if ("otacol" in btncolorupdate) {
-        var x = document.getElementById("updatebtn");
-        if (btncolorupdate["otacol"] == "btngrey") {
-           x.style.backgroundColor = '#d1d1d1';
+    if ("sid" in msg) {
+        opt.text = msg["sid"]
+        console.log("add option: ", opt);
+        selssid.add(opt);
+    }
+    if ("wifcol" in msg) {
+        if (msg["wifcol"] == "btngreen") {
+           wifbtn.style.backgroundColor = 'green';
         }
-        if (btncolorupdate["otacol"] == "btnblue") {
-           x.style.backgroundColor = 'blue';
+        if (msg["wifcol"] == "btnred") {
+           wifbtn.style.backgroundColor = 'red';
         }
-        if (btncolorupdate["otacol"] == "btngreen") {
-           x.style.backgroundColor = 'green';
+        if (msg["wifcol"] == "btnyellow") {
+           wifbtn.style.backgroundColor = 'yellow';
         }
-        if (btncolorupdate["otacol"] == "btnyellow") {
-           x.style.backgroundColor = 'yellow';
+        if (msg["wifcol"] == "btngrey") {
+           wifbtn.style.backgroundColor = '#d1d1d1';
         }
-        if (btncolorupdate["otacol"] == "btnred") {
-           x.style.backgroundColor = 'red';
+        if (msg["wifcol"] == "btnblue") {
+           wifbtn.style.backgroundColor = 'blue';
+        }
+    }
+    if ("otacol" in msg) { 
+        if (msg["otacol"] == "btngrey") {
+           updbtn.style.backgroundColor = '#d1d1d1';
+        }
+        if (msg["otacol"] == "btnblue") {
+           updbtn.style.backgroundColor = 'blue';
+        }
+        if (msg["otacol"] == "btngreen") {
+           updbtn.style.backgroundColor = 'green';
+        }
+        if (msg["otacol"] == "btnyellow") {
+           updbtn.style.backgroundColor = 'yellow';
+        }
+        if (msg["otacol"] == "btnred") {
+           updbtn.style.backgroundColor = 'red';
         }
     }
 }

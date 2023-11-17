@@ -2,17 +2,18 @@ import network
 import socket
 import ure
 import time
+import brand
 from debug import dbgprint
 
-ap_ssid = "ESCProg"
-ap_password = "ESCProg123"
-ap_authmode = 3  # WPA2
-hostnm = "escprog"
+hostnm = brand.HOSTNM
+ap_ssid = brand.APSSID
+ap_password = ap_ssid
+ap_authmode = brand.AP_AUTH
 
-IP =      "192.168.4.1"
-SUBNET =  "255.255.255.0"
-GATEWAY = "192.168.4.1"
-DNS =     "0.0.0.0"
+IP = brand.IP
+SUBNET = brand.SUBNET 
+GATEWAY = brand.GATEWAY
+DNS = brand.DNS
 
 NETWORK_PROFILES = 'wifi.dat'
 
@@ -77,6 +78,9 @@ def run_ap():
     wlan_ap.active(False)
     while wlan_ap.active() is True:
         pass
+    profiles = read_profiles()
+    if ap_ssid in profiles:
+      ap_password = profiles[ap_ssid]
     wlan_ap.config(essid=ap_ssid, password=ap_password, hostname=hostnm)
     wlan_ap.active(True)
     while wlan_ap.active() is False:
@@ -134,18 +138,33 @@ def connectnsave(ssid, password):
     if con == None: 
         return None
     elif con == True:
-        try:
-            profiles = read_profiles()
-        except OSError:
-            profiles = {}
-        
-        profiles[ssid] = password
-        write_profiles(profiles)
+        save_profile(ssid, password)
         time.sleep(5)
         return True
     else:
         return False
- 
+
+def save_profile(ssid, pw):
+    try:
+        profiles = read_profiles()
+    except OSError:
+        profiles = {}     
+    profiles[ssid] = pw
+    write_profiles(profiles)
+    return True
+
+def del_profile(ssid):
+    try:
+        profiles = read_profiles()
+    except OSError:
+        profiles = {}       
+    dbgprint(profiles)
+    if ssid in profiles:
+       del profiles[ssid]
+       dbgprint(profiles)
+       write_profiles(profiles)
+       return True
+    return False
  
 def set_wlan_status(stat):
      global wlan_status

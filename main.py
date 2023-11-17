@@ -9,9 +9,10 @@ from menu import menu, resetmenu
 from debug import dbgprint
 from servo import SERVOModule, servoaction
 from led import init_led, set_blink, init_obled, blink_obled
-from wificon import scan4ap, connectnsave, get_wlan_status, get_known_stations
+from wificon import scan4ap, connectnsave, get_wlan_status, get_known_stations, del_profile, save_profile
+from ugit import get_version
+import brand
 
-    
 
 # pinout 
 # tx    GP8   Pin_11 
@@ -60,9 +61,19 @@ async def servo(request):
 async def wifi(request):
     return render_template('system.html')
 
-@app.route('/index.html')
+@app.route('/about.html')
 async def about(request):
-    return render_template('index.html')
+    tmp = []
+    fwver = get_version().split(":")
+    tmp.append("FW: " + fwver[1])
+    tmp.append("HW: " + brand.HWREF)
+    tmp.append("Serial: " + brand.SERIAL)
+    essid = get_wlan_status()[1].config('ssid')
+    ip = get_wlan_status()[1].ifconfig()[0]
+    tmp.append("WLAN: "+ essid + " " + ip)
+    mac = get_wlan_status()[1].config('mac')
+    tmp.append("MAC: " + '{:02x}:{:02x}:{:02x}:{:02x}:{:02x}:{:02x}'.format(*mac))
+    return render_template('about.html', infolist=tmp)
 
 
 # initialize websocket
@@ -116,16 +127,19 @@ async def system(request, ws):
                 savedssid = list(get_known_stations().keys())
                 rmonlyssids = []
                 for ssid in savedssid:
-                  if ssid not in scanssids:
-                    rmonlyssids.append(ssid + " *")
+                    if ssid not in scanssids:
+                        rmonlyssids.append(ssid + " *")
+                apssid = brand.APSSID
+                if apssid not in savedssid:
+                    rmonlyssids.append(apssid + " +")
                 ssids = []
                 # from scan 
                 for ssid in scanssids:
-                  ssids.append(ssid)
-                # from wifi.dat
+                    ssids.append(ssid)
+                # from wifi.dat + ap
                 for ssid in rmonlyssids:
-                  ssids.append(ssid)
-                print(ssids)
+                    ssids.append(ssid)
+                dbgprint(ssids)
                 while len(ssids):
                     scanssid = ssids.pop(0)
                     ssid = str(scanssid)
@@ -134,34 +148,39 @@ async def system(request, ws):
                 await ws.send(ujson.dumps({"wif":"scan stop", "wifcol":"btngrey"}))
             elif ujdata["wif"] == "remove":
                 if "ssid" and "pw" in ujdata:
-                  # remove from wifi.dat
-                  selssid = ujdata["ssid"]
-                  if selssid in rmonlyssids:
-                     selssid = selssid[:-2]
-                  if selssid in savedssid:
-                      btncolor = "btngreen"
-                  else:
-                      btncolor = "btnred"
-                  await ws.send(ujson.dumps({"wifcol":btncolor})) 
+                    # remove from wifi.dat
+                    selssid = ujdata["ssid"]
+                    if selssid in rmonlyssids:
+                        selssid = selssid[:-2]
+                    if del_profile(selssid):
+                        btncolor = "btngreen"
+                    else:
+                        btncolor = "btnred"
+                    await ws.send(ujson.dumps({"wifcol":btncolor})) 
             elif ujdata["wif"] == "save":
                 if "ssid" and "pw" in ujdata:
-                    # try connect and save to wifi.dat
-                    ssid = ujdata["ssid"]
+                    selssid = ujdata["ssid"]
                     pw = ujdata["pw"]
-                    conn = connectnsave(ssid, pw)
-                    if conn == True:
-                        await ws.send(ujson.dumps({"wifcol":"btngreen"}))
-                    elif conn == False:
-                        await ws.send(ujson.dumps({"wifcol":"btnred"}))
-                    elif conn == None:
-                        await ws.send(ujson.dumps({"wifcol":"btnblue"}))
-           
+                    if selssid in rmonlyssids:
+                         selssid = selssid[:-2]
+                         if save_profile(selssid, pw):
+                            await ws.send(ujson.dumps({"wifcol":"btngreen"}))
+                         else:
+                            await ws.send(ujson.dumps({"wifcol":"btnred"}))       
+                    else: # try connect and save to wifi.dat
+                        conn = connectnsave(selssid, pw)
+                        if conn == True:
+                            await ws.send(ujson.dumps({"wifcol":"btngreen"}))
+                        elif conn == False:
+                            await ws.send(ujson.dumps({"wifcol":"btnred"}))
+                        elif conn == None:
+                            await ws.send(ujson.dumps({"wifcol":"btnblue"}))      
             else:
                 await ws.send(ujson.dumps({"wif":"err"}))
         elif "ota" in ujdata:
             if ujdata["ota"] == "update":
-                stat = get_wlan_status()
-                if stat[0] == "STA":
+                stat = get_wlan_status()[0]
+                if stat == "STA":
                     f = open("update.dat", "w")
                     f.write("run update")
                     f.close()
@@ -196,5 +215,3 @@ if __name__ == "__main__":
     except KeyboardInterrupt:
         servos.deinit_pwms()
         pass
-
-

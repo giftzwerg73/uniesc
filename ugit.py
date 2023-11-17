@@ -33,7 +33,7 @@ default_branch = 'main'
 
 # Don't remove ugit.py from the ignore_files unless you know what you are doing :D
 # Put the files you don't want deleted or updated here use '/filename.ext'
-ignore_files = ['/ugit.py', '/wifi.dat']
+ignore_files = ['/ugit.py', '/wifi.dat', '/brand.py']
 ignore = ignore_files
 ### -----------END OF USER VARIABLES ----------####
 
@@ -246,13 +246,17 @@ def backup():
     backup.write(backup_text)
     backup.close()
 
-def check_update_version():
+def get_version():
     try:
         f = open('version.txt', 'r')
-        oldversion = f.read()
+        version = f.read()
         f.close()
     except OSError:  # open failed -> version unknown
-        oldversion = 'Version:0000'
+        version = 'Version:00.00'
+    return version
+        
+def check_update_version():
+    oldversion = get_version()
     pull('gitver.txt', raw + 'version.txt')
     try:
         f = open('gitver.txt', 'r') 

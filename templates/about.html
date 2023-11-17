@@ -1,3 +1,4 @@
+{% args infolist %}
 <!DOCTYPE html>
 <html>
 <head>
@@ -14,14 +15,17 @@
        <a class="nav-link" href="esc.html">ESC</a>
        <a class="nav-link" href="servo.html">Servo</a>
        <a class="nav-link" href="system.html">System</a>
-       <a class="nav-link" href="about.html">About</a>
+       <a id="logo" class="nav-link" href="about.html">About</a>
     </nav>
     <div>
       <h1>ESCProg Universal ESC Programmer</h1>
+      <h1>(c)2023 Giftzwerg</h1>
     </div>
-    <div>
-      <h1 class="btnblock">Use Menu-Bar to select...</h1>
-    </div>   
+    <ul>
+    {% for info in infolist %}
+        <li>{{ info }}</li>
+    {% endfor %}
+    </ul>
 </div>
 </body>
 </html>
