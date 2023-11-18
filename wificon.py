@@ -17,7 +17,7 @@ DNS = brand.DNS
 
 NETWORK_PROFILES = 'wifi.dat'
 
-network.country('DE')
+network.country(brand.COUNTRY)
 network.hostname(hostnm)
 wlan_ap = network.WLAN(network.AP_IF)
 wlan_sta = network.WLAN(network.STA_IF)
@@ -74,14 +74,17 @@ def get_sta_con(): # return a working WLAN(STA_IF) instance or None
         return wlan_sta
 
 
-def run_ap():
+def run_ap(defaultpw):
     wlan_ap.active(False)
     while wlan_ap.active() is True:
         pass
-    profiles = read_profiles()
-    if ap_ssid in profiles:
-      ap_password = profiles[ap_ssid]
-    wlan_ap.config(essid=ap_ssid, password=ap_password, hostname=hostnm)
+    if defaultpw == True:
+        wlan_ap.config(essid="escAP666", password="escAP666", hostname="escAP666")
+    else:
+        profiles = read_profiles()
+        if ap_ssid in profiles:
+            ap_password = profiles[ap_ssid]
+        wlan_ap.config(essid=ap_ssid, password=ap_password, hostname=hostnm) 
     wlan_ap.active(True)
     while wlan_ap.active() is False:
         pass
