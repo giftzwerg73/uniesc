@@ -4,6 +4,7 @@ from microdot_asyncio_websocket import with_websocket
 from machine import Pin
 import time
 import gc
+import os
 import ujson
 from menu import menu, resetmenu
 from debug import dbgprint
@@ -64,10 +65,11 @@ async def wifi(request):
 @app.route('/about.html')
 async def about(request):
     tmp = []
+    tmp.append("Serial: " + brand.SERIAL)
     fwver = get_version().split(":")
     tmp.append("FW: " + fwver[1])
     tmp.append("HW: " + brand.HWREF)
-    tmp.append("Serial: " + brand.SERIAL)
+    tmp.append("uPy: " + os.uname().version)
     essid = get_wlan_status()[1].config('ssid')
     ip = get_wlan_status()[1].ifconfig()[0]
     tmp.append("WLAN: "+ essid + " " + ip)
