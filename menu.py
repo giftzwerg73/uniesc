@@ -1,5 +1,5 @@
 import time
-from esc import get_esclist, escval, incescnr, incitemnr, incvalnr, mkescscreen, mkescsave, mkescreset
+from esc import get_esclist, escval, incitemnr, incescnr, incvalnr, decescnr, decvalnr, mkescscreen, mkescsave, mkescreset
 from debug import dbgprint
 
 esc = 0
@@ -36,9 +36,9 @@ def menu(data):
         if data["btn"] is "1":
              lcdtxt = "Item\rwas pressed"
         elif data["btn"] is "2":
-             lcdtxt = "Value\rwas pressed"
+             lcdtxt = "-Value-\rwas pressed"
         elif data["btn"] is "3":
-            lcdtxt = "Reset\rwas pressed"
+            lcdtxt = "+Value+\rwas pressed"
         elif data["btn"] is "4":
             lcdtxt = "Ok\rwas pressed"
         else:
@@ -56,14 +56,19 @@ def menu(data):
             lcdtxt = mkescscreen(esc, item, value)
             return lcdtxt
         if data["btn"] is "2":
-            esc = incescnr(esc)
+            esc = decescnr(esc)
             item = 0
             value = 1
             init = 0
             lcdtxt = mkescscreen(esc, item, value)
             return lcdtxt
         if data["btn"] is "3":
-            pass
+            esc = incescnr(esc)
+            item = 0
+            value = 1
+            init = 0
+            lcdtxt = mkescscreen(esc, item, value)
+            return lcdtxt
         if data["btn"] is "4":
             pass
         return None
@@ -80,17 +85,24 @@ def menu(data):
                lcdtxt = mkescscreen(esc, item, value)
                return lcdtxt
         if data["btn"] is "2":
-           value = incvalnr(esc, item, value)
+           value = decvalnr(esc, item, value)
            lcdtxt = mkescscreen(esc, item, value)
            return lcdtxt
         if data["btn"] is "3":
-           lcdtxt = mkescreset(esc, item, value)
-           menu = 2
+           value = incvalnr(esc, item, value)
+           lcdtxt = mkescscreen(esc, item, value)
            return lcdtxt
         if data["btn"] is "4":
-           lcdtxt = mkescsave(esc, item, value)
-           menu = 2
-           return lcdtxt
+           if str(escval(esc, item, 0)) == "Reset ESC": # reset
+               if str(escval(esc, item, value)) == "Yes":
+                   value = 1 # set value to No
+                   lcdtxt = mkescreset(esc, item, value)
+                   menu = 2
+                   return lcdtxt
+           else: # save
+               lcdtxt = mkescsave(esc, item, value)
+               menu = 2
+               return lcdtxt
         return None
     elif menu == 2:
         if data["btn"] is "4":

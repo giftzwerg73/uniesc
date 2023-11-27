@@ -37,8 +37,18 @@ def incescnr(nr):
     EscListNr = escindex
     return escindex
 
+def decescnr(nr):
+    global EscListNr
+    
+    escindex = nr - 1
+    if escindex < 0:
+        escindex = len(esclist)-1
+    EscListNr = escindex
+    return escindex
+
 def get_escnr():
     global EscListNr
+    
     return EscListNr
 
 def incitemnr(escnr, nr):
@@ -53,6 +63,13 @@ def incvalnr(escnr, itemnr, nr):
     val = nr + 1
     if val >= len(esclist[escnr].ItemValue[itemnr]):
         val = 1
+    esclist[escnr].ItmValArr[itemnr] = val
+    return esclist[escnr].ItmValArr[itemnr]
+
+def decvalnr(escnr, itemnr, nr):
+    val = nr - 1
+    if val <= 0:
+        val = len(esclist[escnr].ItemValue[itemnr])-1
     esclist[escnr].ItmValArr[itemnr] = val
     return esclist[escnr].ItmValArr[itemnr]
 
