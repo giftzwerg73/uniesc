@@ -2,22 +2,27 @@ import network
 import socket
 import ure
 import time
-import brand
-from debug import dbgprint
+import config
 
-hostnm = brand.HOSTNM
-ap_ssid = brand.APSSID
+dbgen = 0
+def dbgprint(txt):
+    if dbgen:
+        print(str(txt))
+
+
+hostnm = config.HOSTNM
+ap_ssid = config.APSSID
 ap_password = ap_ssid
-ap_authmode = brand.AP_AUTH
+ap_authmode = config.AP_AUTH
 
-IP = brand.IP
-SUBNET = brand.SUBNET 
-GATEWAY = brand.GATEWAY
-DNS = brand.DNS
+IP = config.IP
+SUBNET = config.SUBNET 
+GATEWAY = config.GATEWAY
+DNS = config.DNS
 
 NETWORK_PROFILES = 'wifi.dat'
 
-network.country(brand.COUNTRY)
+network.country(config.COUNTRY)
 network.hostname(hostnm)
 wlan_ap = network.WLAN(network.AP_IF)
 wlan_sta = network.WLAN(network.STA_IF)
@@ -30,17 +35,16 @@ def get_sta_con(): # return a working WLAN(STA_IF) instance or None
     # First check if there already is any connection:
     if wlan_sta.isconnected():
         return wlan_sta
-
-    connected = False
-    try:
-        # Pico connecting to WiFi takes time, wait a bit and try again:
-        time.sleep(3)
-        if wlan_sta.isconnected():
-            return wlan_sta
-
-        # Read known network profiles from file
-        profiles = read_profiles()
-
+    
+    # Pico connecting to WiFi takes time, wait a bit and try again:
+    time.sleep(3)
+    if wlan_sta.isconnected():
+        return wlan_sta
+    
+    connected = False    
+    # Read known network profiles from file
+    profiles = read_profiles()
+    if profiles:
         # Search WiFis in range
         wlan_sta.active(True)
         networks = wlan_sta.scan()
@@ -60,9 +64,6 @@ def get_sta_con(): # return a working WLAN(STA_IF) instance or None
                 connected = do_connect(ssid, None)
             if connected:
                 break
-
-    except OSError as e:
-        print("exception", str(e))
     
     if connected is False:
         # not connected to station
@@ -74,17 +75,21 @@ def get_sta_con(): # return a working WLAN(STA_IF) instance or None
         return wlan_sta
 
 
-def run_ap(defaultpw):
+def run_ap():
+    # deactivate ap
     wlan_ap.active(False)
     while wlan_ap.active() is True:
         pass
-    if defaultpw == True:
-        wlan_ap.config(essid="escAP666", password="escAP666", hostname="escAP666")
+    # default ap config
+    wlan_ap.config(essid="escAP666", password="escAP666", hostname="escAP666")
+    profiles = read_profiles()
+    if ap_ssid in profiles:
+        ap_password = profiles[ap_ssid]
+        wlan_ap.config(essid=ap_ssid, password=ap_password, hostname=hostnm)
     else:
-        profiles = read_profiles()
-        if ap_ssid in profiles:
-            ap_password = profiles[ap_ssid]
-        wlan_ap.config(essid=ap_ssid, password=ap_password, hostname=hostnm) 
+        print("No AP-SSID found -> Using defaults")
+    
+    # activate ap
     wlan_ap.active(True)
     while wlan_ap.active() is False:
         pass
@@ -93,12 +98,16 @@ def run_ap(defaultpw):
 
 
 def read_profiles():
-    with open(NETWORK_PROFILES) as f:
-        lines = f.readlines()
     profiles = {}
-    for line in lines:
-        ssid, password = line.strip("\n").split(";")
-        profiles[ssid] = password
+    try:
+        with open(NETWORK_PROFILES) as f:
+            lines = f.readlines()
+        for line in lines:
+            ssid, password = line.strip("\n").split(";")
+            profiles[ssid] = password
+    except OSError as e:
+        print("Error Reading Wifi Credentials", str(e))
+        profiles = {}
     return profiles
 
 
@@ -148,19 +157,13 @@ def connectnsave(ssid, password):
         return False
 
 def save_profile(ssid, pw):
-    try:
-        profiles = read_profiles()
-    except OSError:
-        profiles = {}     
+    profiles = read_profiles()     
     profiles[ssid] = pw
     write_profiles(profiles)
     return True
 
 def del_profile(ssid):
-    try:
-        profiles = read_profiles()
-    except OSError:
-        profiles = {}       
+    profiles = read_profiles()     
     dbgprint(profiles)
     if ssid in profiles:
        del profiles[ssid]
@@ -183,5 +186,33 @@ def get_known_stations():
     except OSError:
         profiles = {}
     return profiles
+
+
+# call function in main
+def wifi_connect():
+    # try to connect to station
+    wlan_sta = get_sta_con()   
+    if wlan_sta is not None:
+        # connected to station
+        print(wlan_sta)
+        print("Connected. Network config: ", wlan_sta.ifconfig())
+        set_wlan_status(["STA", wlan_sta])
+        # check for updates
+        try:
+            f = open('update.dat', 'r')
+            upf = f.read()
+            f.close()
+            os.remove('update.dat')
+            if upf is "run update":
+                chk = ugit.check_update_version()
+                if chk is True:
+                    print("Running update now...")
+                    ugit.pull_all(isconnected=True,reboot=False)  
+        except OSError:  # open failed -> normal boot
+            pass
+    else: # open ap
+        wlan_ap = run_ap()
+        print(wlan_ap)
+        print("AP up. Network config: ", wlan_ap.ifconfig())
+        set_wlan_status(["AP", wlan_ap])
     
-     

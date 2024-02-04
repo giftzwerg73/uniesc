@@ -6,25 +6,19 @@
   <meta name="author" content="MS">
   <meta name="description" content="Universal ESC Programmer">
   <title>ESCProg</title>
-  <link rel="stylesheet" href="static/index.css">
+  <link rel="stylesheet" href="static/system.css">
 </head>
 <script>
-  function toggleField(hideObj,showObj){
-    hideObj.disabled=true;        
-    hideObj.style.display='none';
-    showObj.disabled=false;   
-    showObj.style.display='inline';
-    showObj.focus();
-  }
+    function toggleField(hideObj,showObj){
+      hideObj.disabled=true;        
+      hideObj.style.display='none';
+      showObj.disabled=false;   
+      showObj.style.display='inline';
+      showObj.focus();
+    }
 </script>
 <body>
-<div class="panel">
-    <nav id="topnav">
-         <a class="nav-link" href="esc.html">ESC</a>
-         <a class="nav-link" href="servo.html">Servo</a>
-         <a id="logo" class="nav-link" href="system.html">System</a>
-         <a class="nav-link" href="about.html">About</a>
-    </nav>
+<div class="outline">
     <div class="system">
        <label for="selectssid">Select SSID from List:</label>
        <select style="font-size: 20px; width: 100%;" name="selectssid" id="selectssid"

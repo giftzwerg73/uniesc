@@ -1,6 +1,6 @@
 // system page ready
 function systempageready() {
-  sendMessage(JSON.stringify({"wpg":"3"}));
+  sendMessage(JSON.stringify({"wpg":"system"}));
   console.log("System page ready");
 }
 

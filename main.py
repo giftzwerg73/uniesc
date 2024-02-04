@@ -1,44 +1,43 @@
+from machine import Pin, Timer
+import os
+import time
+import ujson
+import config
+from esc_com import get_init_data, write_parameter
+from esc_text import get_escnamelist, get_escitemtextlist, get_escvaluetextlist, get_esctabledict, test_esctabledict
+from wificon import wifi_connect, get_wlan_status, scan4ap, get_known_stations, connectnsave
+import ugit
 from microdot_asyncio import Microdot, Response, send_file
 from microdot_utemplate import render_template
 from microdot_asyncio_websocket import with_websocket
-from machine import Pin
-import time
-import gc
-import os
-import ujson
-from menu import menu, resetmenu
-from debug import dbgprint
-from servo import SERVOModule, servoaction
-from led import init_led, set_blink, init_obled, blink_obled
-from wificon import scan4ap, connectnsave, get_wlan_status, get_known_stations, del_profile, save_profile
-from ugit import get_version
-import brand
 
 
-# pinout 
-# tx    GP8   Pin_11 
-# rx    GP9   Pin_12
-# led1  GP14  Pin_19
-# led2  GP15  Pin_20
-# pwm1  GP19  Pin_25
-# pwm2  GP20  Pin_26
-# pwm3  GP21  Pin_27
+escdata = get_init_data()
+print(escdata)
+escnames = get_escnamelist()
+print(escnames)
+esctabledict = get_esctabledict()
+print(esctabledict)
+print("")
+print("---------------------------------------------------------------------")
+print("")
 
-# onboard led 
-obled = init_obled()
 
-# gpio board led1, led2
-led_pins = [14, 15]
-init_led(led_pins, 0, 4)
-set_blink(0, 0, 2, 0)
-set_blink(1, 2, 0, 0)
+led = Pin("LED", Pin.OUT) 
+def blink(timer):
+    led.toggle()  
 
-# initialize servos
-pwm_pins = [19, 20, 21]
-servos = SERVOModule(pwm_pins, 300000, 2300000, 50)
-# Set default position to 90 degree
-# servo.turn_off_servo()
-servos.set_servo_pos({'srv1': '90', 'srv2': '90', 'srv3': '90'})
+# make network connection
+wifi_connect()
+# now blink
+wstat = get_wlan_status()
+if wstat[0] == "STA":
+    blinkfreq = 1
+elif wstat[0] == "AP":
+    blinkfreq = 2
+else:
+    blinkfreq = 13 
+Timer().init(freq=blinkfreq, mode=Timer.PERIODIC, callback=blink)    
 
 # Initialize MicroDot
 app = Microdot()
@@ -47,77 +46,64 @@ Response.default_content_type = 'text/html'
 # root route
 @app.route('/')
 async def index(request):
-    return render_template('index.html')
+    # render in esc names
+    return render_template('index.html', infolist=escnames)
 
-@app.route('/esc.html')
-async def esc(request):
-    resetmenu()
-    return render_template('esc.html')
-
-@app.route('/servo.html')
-async def servo(request):
-    return render_template('servo.html')
-
+# system route
 @app.route('/system.html')
-async def wifi(request):
+async def system(request):
     return render_template('system.html')
 
-@app.route('/about.html')
-async def about(request):
-    tmp = []
-    tmp.append("Serial: " + brand.SERIAL)
-    fwver = get_version().split(":")
-    tmp.append("FW: " + fwver[1])
-    tmp.append("HW: " + brand.HWREF)
-    tmp.append("uPy: " + os.uname().version)
-    essid = get_wlan_status()[1].config('ssid')
-    ip = get_wlan_status()[1].ifconfig()[0]
-    tmp.append("WLAN: "+ essid + " " + ip)
-    mac = get_wlan_status()[1].config('mac')
-    tmp.append("MAC: " + '{:02x}:{:02x}:{:02x}:{:02x}:{:02x}:{:02x}'.format(*mac))
-    return render_template('about.html', infolist=tmp)
-
-
-# initialize websocket
-@app.route('esc/ws')
+# initialize websocket for index page
+@app.route('/ws')
 @with_websocket
 async def esc(request, ws):
     while True:
-        gc.collect()
         data = await ws.receive()
-        obled.on()
         ujdata = ujson.loads(data)
-        dbgprint(ujdata) 
-        lcdtxt = menu(ujdata)
-        if lcdtxt != None:
-            await ws.send(ujson.dumps({"lcd1":lcdtxt}))
-        obled.off()
+        if "save" in ujdata:
+            pld = ujdata["save"]
+            if len(pld) == 15:   
+                if write_parameter(pld) == 0: # write data to esc
+                    escdata[3] = pld
+                    print("Written data:")
+                    print(escdata[3]) # update data
+                    await ws.send(ujson.dumps({"saved": "ok"}))
+                else:
+                    await ws.send(ujson.dumps({"saved": "error"}))
+                    await ws.send(ujson.dumps({"info": "Saving Failed"}))
+            else:
+                await ws.send(ujson.dumps({"saved": "error"}))
+                await ws.send(ujson.dumps({"info": "Data NOT valid"}))
+                        
+        elif "init" in ujdata:
+            init_data = []
+            if ujdata["init"] == "???":
+                if escdata[0] == 1:
+                    init_data.append(escdata)
+                    init_data.append(escnames)
+                    init_data.append(esctabledict)
+                    await ws.send(ujson.dumps({"init": init_data}))
+                    info = "Init from " + str(config.SERIAL) + " OK"
+                else:
+                    info = "Init from " + str(config.SERIAL) + " FAILED"
+                await ws.send(ujson.dumps({"info": info}))
+                
+            else:
+                await ws.send(ujson.dumps({"info": "Init Failed"}))
+        else:
+           await ws.send(ujson.dumps({"cmdfail": data}))
+           await ws.send(ujson.dumps({"info": "Unknown Command"}))
 
-@app.route('servo/ws')
-@with_websocket
-async def servo(request, ws):
-    while True:
-        gc.collect()
-        data = await ws.receive()
-        obled.on()
-        ujdata = ujson.loads(data)
-        dbgprint(ujdata)
-        servoans = servoaction(servos, ujdata)
-        if servoans != None:
-            await ws.send(ujson.dumps({"srv":servoans}))
-        obled.off()
-       
+# initialize websocket for system page
 @app.route('system/ws')
 @with_websocket
-async def system(request, ws):
+async def sys(request, ws):
     while True:
-        gc.collect()
         data = await ws.receive()
-        obled.on()
         ujdata = ujson.loads(data)
-        dbgprint(ujdata)
         if "wpg" in ujdata:
-            if ujdata["wpg"] is "3": # websocket for system page ready
+            if ujdata["wpg"] is "system": # websocket for system page ready
                 await ws.send(ujson.dumps({"wifcol":"btngrey", "otacol":"btngrey"}))
             else:
                 await ws.send(ujson.dumps({"wpg":"err"}))    
@@ -131,7 +117,7 @@ async def system(request, ws):
                 for ssid in savedssid:
                     if ssid not in scanssids:
                         rmonlyssids.append(ssid + " *")
-                apssid = brand.APSSID
+                apssid = config.APSSID
                 if apssid not in savedssid:
                     rmonlyssids.append(apssid + " +")
                 ssids = []
@@ -141,7 +127,6 @@ async def system(request, ws):
                 # from wifi.dat + ap
                 for ssid in rmonlyssids:
                     ssids.append(ssid)
-                dbgprint(ssids)
                 while len(ssids):
                     scanssid = ssids.pop(0)
                     ssid = str(scanssid)
@@ -187,7 +172,6 @@ async def system(request, ws):
                     f.write("run update")
                     f.close()
                     await ws.send(ujson.dumps({"otacol":"btngreen"}))
-                    blink_obled(led, 0.1, 0.2, 3)
                     machine.reset()
                 else:
                     await ws.send(ujson.dumps({"otacol":"btnyellow"}))
@@ -195,8 +179,8 @@ async def system(request, ws):
                 await ws.send(ujson.dumps({"ota":"err"}))
         else:
             await ws.send(ujson.dumps({"sys":"err"}))
-        obled.off()
-        
+
+
 # Static CSS/JSS
 @app.route("/static/<path:path>")
 def static(request, path):
@@ -215,5 +199,4 @@ if __name__ == "__main__":
     try:
         app.run(port=80)
     except KeyboardInterrupt:
-        servos.deinit_pwms()
         pass
