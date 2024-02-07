@@ -49,6 +49,7 @@ function get_message(data) {
             while (selssid.options.length > 0) {
                 selssid.remove(0);
             }
+            selssid.add("Select Network");
         }
     }
     if ("sid" in msg) {
