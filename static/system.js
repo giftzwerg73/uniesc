@@ -49,7 +49,7 @@ function get_message(data) {
             while (selssid.options.length > 0) {
                 selssid.remove(0);
             }
-            opt.text = "Select Network"
+            opt.text = "Choose Network from List"
             selssid.add(opt);
         }
     }
@@ -109,5 +109,6 @@ function combo(ssidlist, ssid)
   ssid = document.getElementById(ssid);  
   var idx = ssidlist.selectedIndex;
   var content = ssidlist.options[idx].innerHTML;
-  ssid.value = content;	
+  if (idx != 0) 
+    ssid.value = content;
 }

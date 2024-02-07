@@ -16,7 +16,7 @@ def render(*a, **d):
 <div class=\"wrapper\"> 
     <div class=\"one\">
        <label class=\"label\" for=\"ssidlist\">Visiable Wifi Networks:</label>
-       <select class=\"sel\" name=\"ssidlist\" id=\"ssidlist\" onChange=\"combo(this, 'ssid')\" onMouseOut=\"comboInit(this, 'ssid')\">
+       <select class=\"sel\" name=\"ssidlist\" id=\"ssidlist\" onChange=\"combo(this, 'ssid')\">
           <option>Run Scan first</option>
        </select>
     </div>
