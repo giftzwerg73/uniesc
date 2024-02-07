@@ -14,45 +14,54 @@ def render(infolist):
  
 <body>
  
-<table class=\"outline\">
-  <tr>
-	<td colspan=\"4\"> 
-		<select onchange=\"mkdisp()\" class=\"sel\" id=\"escname\">
-		  <option value=\"None\"> None </option>
-		  """
+<div class=\"wrapper\">
+  <div class=\"one\">
+    <select class=\"sel\" onchange=\"mkdisp()\" id=\"escname\">
+	  <option value=\"None\"> None </option>
+	  """
     for info in infolist:
-        yield """            <option value="""
+        yield """        <option value="""
         yield str(info)
         yield """> """
         yield str(info)
         yield """ </option>
-          """
-    yield """	    </select> </td>
-  </tr>
-  <tr>
-	<!-- <td colspan=\"2\"> <textarea class=\"nr-box\" id=\"nri\" rows=\"1\" disabled > </textarea> </td> -->
-	<!-- <td colspan=\"2\"> <textarea class=\"nr-box\" id=\"nrv\" rows=\"1\" disabled > </textarea> </td> -->
-	<td colspan=\"2\"> <input type=\"text\" class=\"nr-box\" id=\"nri\" disabled> </td>
-	<td colspan=\"2\"> <input type=\"text\" class=\"nr-box\" id=\"nrv\" disabled> </td>
-  </tr>
-  <tr>
-    <td colspan=\"2\"> <textarea class=\"text-box\" id=\"txti\" rows=\"2\" disabled > </textarea> </td>
-    <td colspan=\"2\"> <textarea class=\"text-box\" id=\"txtv\" rows=\"2\" disabled > </textarea> </td>
-  </tr>
-  <tr>
-	<td colspan=\"1\"> <input type=\"button\" value=\"Item--\" onclick=\"dec_item()\" /> </td>
-    <td colspan=\"1\"> <input type=\"button\" value=\"Item++\" onclick=\"inc_item()\" /> </td>
-    <td colspan=\"1\"> <input type=\"button\" value=\"Value--\" onclick=\"dec_val()\" /> </td>
-    <td colspan=\"1\"> <input type=\"button\" value=\"Value++\" onclick=\"inc_val()\" /> </td>
-  </tr>
-  <tr>
-    <td colspan=\"2\"> <input type=\"button\" value=\"Save\" onclick=\"save()\" /> </td>
-    <td colspan=\"2\"> <input type=\"button\" value=\"Reset\" onclick=\"reset()\" /> </td>
-  </tr>
-  <tr>
-    <td colspan=\"4\"> <input type=\"text\" class=\"info-box\" id=\"info\" disabled> </td>
-  </tr>
-</table>
+      """
+    yield """	</select> 
+  </div>
+  <div class=\"two\">
+	<input type=\"text\" class=\"nr-box\" id=\"nri\" disabled>
+  </div>
+  <div class=\"three\">
+    <input type=\"text\" class=\"nr-box\" id=\"nrv\" disabled>
+  </div>
+  <div class=\"four\">
+    <textarea class=\"text-box\" id=\"txti\" rows=\"2\" disabled > </textarea>
+  </div>
+  <div class=\"five\">
+    <textarea class=\"text-box\" id=\"txtv\" rows=\"2\" disabled > </textarea>
+  </div>
+  <div class=\"six\">
+    <input type=\"button\" value=\"Item--\" onclick=\"dec_item()\" />
+  </div>
+  <div class=\"seven\">
+	<input type=\"button\" value=\"Item++\" onclick=\"inc_item()\" />
+  </div>
+  <div class=\"eight\">
+	  <input type=\"button\" value=\"Value--\" onclick=\"dec_val()\" />
+  </div>
+  <div class=\"nine\">
+		<input type=\"button\" value=\"Value++\" onclick=\"inc_val()\" />
+  </div>
+  <div class=\"ten\">
+	  <input type=\"button\" value=\"Save\" onclick=\"save()\" />
+  </div>
+  <div class=\"elf\">
+	  <input type=\"button\" value=\"Reset\" onclick=\"reset()\" />
+  </div>
+  <div class=\"twelve\">
+	  <input type=\"text\" class=\"info-box\" id=\"info\" disabled>
+  </div>
+</div>
  
 <script type=\"text/javascript\" src=\"static/index.js\"></script>
  

@@ -10,6 +10,7 @@ def render(*a, **d):
   <title>ESCProg</title>
   <link rel=\"stylesheet\" href=\"static/system.css\">
 </head>
+
 <script>
     function toggleField(hideObj,showObj)"""
     yield """{
@@ -20,11 +21,13 @@ def render(*a, **d):
       showObj.focus();
     }
 </script>
+
 <body>
-<div class=\"outline\">
-    <div class=\"system\">
-       <label for=\"selectssid\">Select SSID from List:</label>
-       <select style=\"font-size: 20px; width: 100%;\" name=\"selectssid\" id=\"selectssid\"
+	
+<div class=\"wrapper\"> 
+    <div class=\"one\">
+       <label class=\"label\" for=\"selectssid\">Select SSID from List:</label>
+       <select class=\"sel\" name=\"selectssid\" id=\"selectssid\"
             onchange=\"if(this.options[this.selectedIndex].value=='customOption')"""
     yield """{
               toggleField(this,this.nextSibling);
@@ -32,22 +35,37 @@ def render(*a, **d):
             }\">
             <option></option>
             <option value=\"customOption\">Enter custom SSID</option>
-       </select><input name=\"customssid\" id=\"customssid\" style=\"font-size: 20px; width: 100%; display:none;\" disabled=\"disabled\" 
+       </select>
+       <input class=\"sel\" name=\"customssid\" id=\"customssid\" style=\"display:none;\" disabled=\"disabled\" 
             onblur=\"if(this.value=='')"""
     yield """{toggleField(this,this.previousSibling);}\">
-       <label for=\"pw\">Enter Password:</label>
-       <input name=\"pw\" id=\"pw\" style=\"font-size: 20px; width: 100%;\">
-    </div>   
-    <div class=\"btnblock\" id=\"wifibtn\">
-        <button style=\"width: 30%;\" onclick=\"fnbtnremove()\">Del</button> 
-        <button style=\"width: 30%;\" onclick=\"fnbtnscan()\">Scan</button> 
-        <button style=\"width: 30%;\" onclick=\"fnbtnsave()\">Add</button> 
+    </div>       
+    <div class=\"two\">   
+       <label class=\"label\" for=\"pw\">Enter Password:</label>
+       <input class=\"sel\" name=\"pw\" id=\"pw\">
     </div>
-    <h1>Check for Updates</h1>
-    <div class=\"btnblock\" id=\"updatebtn\">
-        <button style=\"width: 70%;\" onclick=\"fnbtnota()\">Update</button> 
+    <div class=\"three\">     
+        <input type=\"button\" value=\"Del\" id=\"wifibtn\" onclick=\"fnbtnremove()\" />
+    </div>   
+    <div class=\"four\">  
+        <input type=\"button\" value=\"Scan\" id=\"wifibtn\" onclick=\"fnbtnscan()\" />
+    </div>  
+    <div class=\"five\">  
+        <input type=\"button\" value=\"Add\" id=\"wifibtn\" onclick=\"fnbtnsave()\" />
+    </div>
+    <div class=\"six\" >
+		<label class=\"label\" for=\"updatebtn\"><br></label>
+        <input type=\"button\" value=\"Update\" id=\"updatebtn\" onclick=\"fnbtnota()\" />
+    </div>
+    <div class=\"seven\">
+		<label class=\"label\" for=\"info\"><br></label>
+	    <input type=\"text\" class=\"info-box\" id=\"info\" disabled>
     </div>
 </div>
+
 <script src=\"static/system.js\"></script>
+
 </body>
-</html>"""
+
+</html>
+"""

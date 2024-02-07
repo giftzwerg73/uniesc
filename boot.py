@@ -2,6 +2,7 @@ from machine import Pin
 from time import sleep_ms
 from esc_com import read_init, read_gpio
 
+
 # debug
 # read_gpio()
 

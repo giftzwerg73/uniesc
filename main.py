@@ -5,7 +5,7 @@ import ujson
 import config
 from esc_com import get_init_data, write_parameter
 from esc_text import get_escnamelist, get_escitemtextlist, get_escvaluetextlist, get_esctabledict, test_esctabledict
-from wificon import wifi_connect, get_wlan_status, scan4ap, get_known_stations, connectnsave
+from wificon import wifi_connect, get_wlan_status, scan4ap, get_known_stations, connectnsave, save_profile
 import ugit
 from microdot_asyncio import Microdot, Response, send_file
 from microdot_utemplate import render_template
@@ -70,11 +70,9 @@ async def esc(request, ws):
                     print(escdata[3]) # update data
                     await ws.send(ujson.dumps({"saved": "ok"}))
                 else:
-                    await ws.send(ujson.dumps({"saved": "error"}))
-                    await ws.send(ujson.dumps({"info": "Saving Failed"}))
+                    await ws.send(ujson.dumps({"saved": "error", "info": "Saving Failed"}))
             else:
-                await ws.send(ujson.dumps({"saved": "error"}))
-                await ws.send(ujson.dumps({"info": "Data NOT valid"}))
+                await ws.send(ujson.dumps({"saved": "error", "info": "Data NOT valid"}))
                         
         elif "init" in ujdata:
             init_data = []
@@ -92,7 +90,6 @@ async def esc(request, ws):
             else:
                 await ws.send(ujson.dumps({"info": "Init Failed"}))
         else:
-           await ws.send(ujson.dumps({"cmdfail": data}))
            await ws.send(ujson.dumps({"info": "Unknown Command"}))
 
 # initialize websocket for system page
@@ -104,13 +101,13 @@ async def sys(request, ws):
         ujdata = ujson.loads(data)
         if "wpg" in ujdata:
             if ujdata["wpg"] is "system": # websocket for system page ready
-                await ws.send(ujson.dumps({"wifcol":"btngrey", "otacol":"btngrey"}))
+                await ws.send(ujson.dumps({"info":"Ready"}))
             else:
                 await ws.send(ujson.dumps({"wpg":"err"}))    
         elif "wif" in ujdata:
             # try connect and save to wifi.dat
             if ujdata["wif"] == "scan":
-                await ws.send(ujson.dumps({"wif":"scan start", "wifcol":"btnyellow"}))
+                await ws.send(ujson.dumps({"wif":"scan start", "info":"Scan running"}))
                 scanssids = scan4ap()
                 savedssid = list(get_known_stations().keys())
                 rmonlyssids = []
@@ -132,7 +129,7 @@ async def sys(request, ws):
                     ssid = str(scanssid)
                     await ws.send(ujson.dumps({"sid":ssid}))
                     time.sleep(0.003)
-                await ws.send(ujson.dumps({"wif":"scan stop", "wifcol":"btngrey"}))
+                await ws.send(ujson.dumps({"wif":"scan stop", "info":"Scan finished"}))
             elif ujdata["wif"] == "remove":
                 if "ssid" and "pw" in ujdata:
                     # remove from wifi.dat
@@ -140,28 +137,29 @@ async def sys(request, ws):
                     if selssid in rmonlyssids:
                         selssid = selssid[:-2]
                     if del_profile(selssid):
-                        btncolor = "btngreen"
+                        info = str(selssid) + " removed from list"
                     else:
-                        btncolor = "btnred"
-                    await ws.send(ujson.dumps({"wifcol":btncolor})) 
+                        info = str(selssid) + " remove failed"
+                    await ws.send(ujson.dumps({"info":info})) 
             elif ujdata["wif"] == "save":
                 if "ssid" and "pw" in ujdata:
                     selssid = ujdata["ssid"]
                     pw = ujdata["pw"]
                     if selssid in rmonlyssids:
-                         selssid = selssid[:-2]
-                         if save_profile(selssid, pw):
-                            await ws.send(ujson.dumps({"wifcol":"btngreen"}))
-                         else:
-                            await ws.send(ujson.dumps({"wifcol":"btnred"}))       
+                        selssid = selssid[:-2]
+                        if save_profile(selssid, pw):
+                            info = str(selssid) + " saved to list"
+                        else:
+                            info = str(selssid) + " save failed"
+                        await ws.send(ujson.dumps({"info":info}))       
                     else: # try connect and save to wifi.dat
                         conn = connectnsave(selssid, pw)
                         if conn == True:
-                            await ws.send(ujson.dumps({"wifcol":"btngreen"}))
+                            await ws.send(ujson.dumps({"info":"btngreen"}))
                         elif conn == False:
-                            await ws.send(ujson.dumps({"wifcol":"btnred"}))
+                            await ws.send(ujson.dumps({"info":"btnred"}))
                         elif conn == None:
-                            await ws.send(ujson.dumps({"wifcol":"btnblue"}))      
+                            await ws.send(ujson.dumps({"info":"btnblue"}))      
             else:
                 await ws.send(ujson.dumps({"wif":"err"}))
         elif "ota" in ujdata:
@@ -171,10 +169,10 @@ async def sys(request, ws):
                     f = open("update.dat", "w")
                     f.write("run update")
                     f.close()
-                    await ws.send(ujson.dumps({"otacol":"btngreen"}))
+                    await ws.send(ujson.dumps({"info":"btngreen"}))
                     machine.reset()
                 else:
-                    await ws.send(ujson.dumps({"otacol":"btnyellow"}))
+                    await ws.send(ujson.dumps({"info":"btnyellow"}))
             else:
                 await ws.send(ujson.dumps({"ota":"err"}))
         else:

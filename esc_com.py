@@ -1,4 +1,4 @@
-from machine import Pin
+from machine import Pin, Timer
 from time import sleep_us, ticks_us, ticks_diff, ticks_add
 
 # tx    GP13   Pin_17 
@@ -13,6 +13,11 @@ read_values = [0] * 15
 reset_values = [0] * 15
 ack = 0
 
+tmocnt = 0
+def inctmo(timer):
+    global tmocnt
+    tmocnt += 1  
+  
 
 def get_init_data():
     global init_ok, items, options_per_item, read_values, reset_values, ack
@@ -126,7 +131,7 @@ def write_parameter(data):
 
 
 def read_init():  
-    generte_testdata = False # True
+    generte_testdata = True # False
     debug = 0
     init_data = [0] * 50
     

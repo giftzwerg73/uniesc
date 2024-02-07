@@ -4,14 +4,14 @@ var esc_data = [];
 var esc_names = [];
 var esc_dict = {};
 
-/* */
+/*
 var esc_data = [ 1,
 				 4,
 				[2, 7, 5, 8, 4, 3, 3, 2, 7, 1, 1, 5, 0, 0, 0],
 				[1, 0, 5, 4, 1, 1, 1, 1, 4, 0, 0, 0, 0, 0, 0],
 				[1, 0, 3, 4, 1, 1, 1, 1, 4, 0, 0, 0, 0, 0, 0],
 				 85 ];
-/* */
+*/
 
 document.getElementById("nri").value = "--";
 document.getElementById("nrv").value = "--";

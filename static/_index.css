@@ -1,6 +1,8 @@
 @charset "UTF-8";
 
 * {
+  margin: 0;
+  padding: 0;
   box-sizing: border-box;
 }
 
@@ -18,82 +20,13 @@ body {
   justify-items: center;
 }
 
-.wrapper {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 10px;
-  grid-auto-rows: minmax(90px, auto);
-  max-width: 100%;
-  margin: 0 auto;
-  background-color: black;
-  border-radius: 5px;
-  padding: 7px;
-}
-
-.wrapper > div {
-  padding: 0.1em;
-  height: 100%;
-  width: 100%;
-  place-self: center;
-}
-
-.one {
-  grid-column: 1/5;
-  grid-row: 1;
-}
-
-.two {
-  grid-column: 1/3
-  ;
-  grid-row: 2;
-}
-
-.three {
-  grid-column: 3/5;
-  grid-row: 2;
-}
-.four {
-  grid-column: 1/3;
-  grid-row: 3/5;
-}
-
-.five {
-  grid-column: 3/5;
-  grid-row:  3/5;
-}
-
-.six {
-  grid-column: 1/2;
-  grid-row: 5;
-}
-.seven {
-  grid-column: 2/3;
-  grid-row: 5;
-}
-
-.eight {
-  grid-column: 3/4;
-  grid-row: 5;
-}
-
-.nine {
-  grid-column: 4/5;
-  grid-row: 5;
-}
-
-.ten{
-  grid-column: 1/3;
-  grid-row: 6;
-}
-
-.elf{
-  grid-column: 3/5;
-  grid-row: 6;
-}
-
-.twelve{
-  grid-column: 1/5;
-  grid-row: 7;
+.outline {
+    padding: 10px;
+    margin: auto;
+    table-layout: fixed;
+    height: 100%;
+    background-color: #191b28;
+    box-shadow: rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px;
 }
 
 .sel {
@@ -104,7 +37,7 @@ body {
     color: white;
     border-radius: 5px;
     width: 100%;
-    height: 85%;
+    height: 65%;
 }
 
 .nr-box {
@@ -114,8 +47,8 @@ body {
     border: solid black 0.5px;
     color: black;
     border-radius: 5px;
-    width: 40%;
-    height: 100%;
+    width: 95%;
+    height: 85%;
     text-align: center;
     margin: 0 auto;
     display: block;
@@ -123,13 +56,13 @@ body {
 
 .text-box {
     font-family: Roboto, sans-serif;
-    font-size: 1.75em;
+    font-size: 2em;
     background-color: #dcdbe1;
     border: solid black 0.5px;
     color: black;
     border-radius: 5px;
-    width: 100%;
-    height: 100%;
+    width: 95%;
+    height: 85%;
     text-align: left;
     margin: 0 auto;
     display: block;
@@ -165,3 +98,4 @@ input:active[type=button] {
     width: 100%;
     height: 65%;
 }
+

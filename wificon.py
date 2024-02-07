@@ -1,8 +1,10 @@
 import network
 import socket
+import os
 import ure
 import time
 import config
+import ugit
 
 dbgen = 0
 def dbgprint(txt):
@@ -26,6 +28,7 @@ network.country(config.COUNTRY)
 network.hostname(hostnm)
 wlan_ap = network.WLAN(network.AP_IF)
 wlan_sta = network.WLAN(network.STA_IF)
+
 wlan_status = None
  
 server_socket = None
@@ -190,6 +193,12 @@ def get_known_stations():
 
 # call function in main
 def wifi_connect():
+    print("Hostname " + hostnm)
+    print("AP SSID  " + ap_ssid)
+    print("AP IP    " + IP)
+    print("AP GW    " + GATEWAY)
+    print("SUB      " + SUBNET)
+    print("DNS      " + DNS)
     # try to connect to station
     wlan_sta = get_sta_con()   
     if wlan_sta is not None:

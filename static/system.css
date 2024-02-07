@@ -1,8 +1,6 @@
 @charset "UTF-8";
 
 * {
-  margin: 0;
-  padding: 0;
   box-sizing: border-box;
 }
 
@@ -20,58 +18,104 @@ body {
   justify-items: center;
 }
 
-.outline {
+.wrapper {
   display: grid;
-  grid-gap: 3em;
-  justify-items: center;
-  cursor: default;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  grid-auto-rows: minmax(90px, auto);
+  max-width: 100%;
+  margin: 0 auto;
+  background-color: black;
+  border-radius: 5px;
+  padding: 7px;
 }
 
-button {
-  //min-width:80px;
-  width: 20%;
-  padding: .5em .75em;
-  font-size: 1.0rem;
-  color: #fff;
-  text-shadow: 0 -1px 1px #000;
-  border: 1px solid #000;
-  border-radius: .5em;
-  background-image: linear-gradient(#2e3538, #73848c);
-  box-shadow: inset 0 2px 4px #ffffff80, 0 0.2em 0.4em rgba(0, 0, 0, 0.4);
-  outline: none;
-  cursor: pointer;
-}
-button:active {
-  transform: translateY(2px);
-}
-.btnblock {
-  display: block;
+.wrapper > div {
+  padding: 0.1em;
+  height: 100%;
   width: 100%;
-  border: none;
-  border-radius: .5em;
-  background-color: #d1d1d1;
-  padding: 14px 28px;
-  font-size: 16px;
-  cursor: default;
-  text-align: center;
+  place-self: center;
 }
 
-.system {
-  padding: 10px;
-  display: grid;
-  grid-template-rows: 1fr;
-  align-items: vertical;
-  justify-items: center;
-  width: 100%;
-  font-size: 20px;
-  background-color: #d1d1d1;
-  border-radius: .5em;
+.one {
+  grid-column: 1/4;
+  grid-row: 1;
 }
 
-select{
-  background-color: white;
+.two {
+  grid-column: 1/4;
+  grid-row: 2;
 }
 
-option{
-  color: RoyalBlue;
+.three {
+  grid-column: 1/2;
+  grid-row: 3;
 }
+.four {
+  grid-column: 2/3;
+  grid-row: 3;
+}
+
+.five {
+  grid-column: 3/4;
+  grid-row:  3;
+}
+
+.six {
+  grid-column: 1/4;
+  grid-row: 4;
+}
+
+.seven {
+  grid-column: 1/4;
+  grid-row: 5;
+}
+
+.sel {
+    font-family: Roboto, sans-serif;
+    font-size: 1.5em;
+    background-color: #64278f;
+    border: solid black 0.5px;
+    color: white;
+    border-radius: 5px;
+    width: 100%;
+    height: 65%;
+}
+
+.label {
+    font-family: Roboto, sans-serif;
+    font-size: 1.5em;
+    color: white;
+}
+
+input[type=button] {
+    font-family: Roboto, sans-serif;
+    font-size: 1.5em;
+    background-color: #64278f;
+    border: solid black 0.5px;
+    color: white;
+    border-radius: 5px;
+    width: 100%;
+    height: 85%;
+    outline: none;
+    margin: auto;
+}
+
+input:active[type=button] {
+    background: #e5e5e5;
+    -webkit-box-shadow: inset 0px 0px 5px #c1c1c1;
+    -moz-box-shadow: inset 0px 0px 5px #c1c1c1;
+    box-shadow: inset 0px 0px 5px #c1c1c1;
+}
+
+.info-box {
+    font-family: Roboto, sans-serif;
+    font-size: 1em;
+    background-color: #dcdbe1;
+    border: solid black 0.5px;
+    color: black;
+    border-radius: 5px;
+    width: 100%;
+    height: 65%;
+}
+

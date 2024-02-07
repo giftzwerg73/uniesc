@@ -58,8 +58,39 @@ function get_message(data) {
         console.log("add option: ", opt);
         selssid.add(opt);
     }
-    if ("info" in msg) {
-      document.getElementById("info").value = msg["info"];
+    if ("wifcol" in msg) {
+        if (msg["wifcol"] == "btngreen") {
+           wifbtn.style.backgroundColor = 'green';
+        }
+        if (msg["wifcol"] == "btnred") {
+           wifbtn.style.backgroundColor = 'red';
+        }
+        if (msg["wifcol"] == "btnyellow") {
+           wifbtn.style.backgroundColor = 'yellow';
+        }
+        if (msg["wifcol"] == "btngrey") {
+           wifbtn.style.backgroundColor = '#d1d1d1';
+        }
+        if (msg["wifcol"] == "btnblue") {
+           wifbtn.style.backgroundColor = 'blue';
+        }
+    }
+    if ("otacol" in msg) { 
+        if (msg["otacol"] == "btngrey") {
+           updbtn.style.backgroundColor = '#d1d1d1';
+        }
+        if (msg["otacol"] == "btnblue") {
+           updbtn.style.backgroundColor = 'blue';
+        }
+        if (msg["otacol"] == "btngreen") {
+           updbtn.style.backgroundColor = 'green';
+        }
+        if (msg["otacol"] == "btnyellow") {
+           updbtn.style.backgroundColor = 'yellow';
+        }
+        if (msg["otacol"] == "btnred") {
+           updbtn.style.backgroundColor = 'red';
+        }
     }
 }
  
