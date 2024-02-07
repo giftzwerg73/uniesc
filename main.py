@@ -5,7 +5,7 @@ import ujson
 import config
 from esc_com import get_init_data, write_parameter
 from esc_text import get_escnamelist, get_escitemtextlist, get_escvaluetextlist, get_esctabledict, test_esctabledict
-from wificon import wifi_connect, get_wlan_status, scan4ap, get_known_stations, connectnsave, save_profile
+from wificon import wifi_connect, get_wlan_status, scan4ap, get_known_stations, connectnsave, save_profile, del_profile
 import ugit
 from microdot_asyncio import Microdot, Response, send_file
 from microdot_utemplate import render_template

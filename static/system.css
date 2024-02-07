@@ -42,33 +42,38 @@ body {
   grid-row: 1;
 }
 
-.two {
+.onehalf {
   grid-column: 1/4;
   grid-row: 2;
 }
 
+.two {
+  grid-column: 1/4;
+  grid-row: 3;
+}
+
 .three {
   grid-column: 1/2;
-  grid-row: 3;
+  grid-row: 4;
 }
 .four {
   grid-column: 2/3;
-  grid-row: 3;
+  grid-row: 4;
 }
 
 .five {
   grid-column: 3/4;
-  grid-row:  3;
+  grid-row:  4;
 }
 
 .six {
   grid-column: 1/4;
-  grid-row: 4;
+  grid-row: 5;
 }
 
 .seven {
   grid-column: 1/4;
-  grid-row: 5;
+  grid-row: 6;
 }
 
 .sel {
@@ -110,7 +115,7 @@ input:active[type=button] {
 
 .info-box {
     font-family: Roboto, sans-serif;
-    font-size: 1em;
+    font-size: 1.25em;
     background-color: #dcdbe1;
     border: solid black 0.5px;
     color: black;

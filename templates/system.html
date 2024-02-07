@@ -9,31 +9,18 @@
   <link rel="stylesheet" href="static/system.css">
 </head>
 
-<script>
-    function toggleField(hideObj,showObj){
-      hideObj.disabled=true;        
-      hideObj.style.display='none';
-      showObj.disabled=false;   
-      showObj.style.display='inline';
-      showObj.focus();
-    }
-</script>
-
 <body>
 	
 <div class="wrapper"> 
     <div class="one">
-       <label class="label" for="selectssid">Select SSID from List:</label>
-       <select class="sel" name="selectssid" id="selectssid"
-            onchange="if(this.options[this.selectedIndex].value=='customOption'){
-              toggleField(this,this.nextSibling);
-              this.selectedIndex='0';
-            }">
-            <option></option>
-            <option value="customOption">Enter custom SSID</option>
+       <label class="label" for="ssidlist">Visiable Wifi Networks:</label>
+       <select class="sel" name="ssidlist" id="ssidlist" onChange="combo(this, 'ssid')" onMouseOut="comboInit(this, 'ssid')">
+          <option>Run Scan first</option>
        </select>
-       <input class="sel" name="customssid" id="customssid" style="display:none;" disabled="disabled" 
-            onblur="if(this.value==''){toggleField(this,this.previousSibling);}">
+    </div>
+    <div class="onehalf">  
+       <label class="label" for="ssid">SSID:</label>
+       <input class="sel" name="ssid" id="ssid">
     </div>       
     <div class="two">   
        <label class="label" for="pw">Enter Password:</label>

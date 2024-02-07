@@ -38,7 +38,7 @@ function sendMessage(message) {
 }
 
 function get_message(data) {
-    var selssid = document.getElementById("selectssid");
+    var selssid = document.getElementById("ssidlist");
     var opt = document.createElement("option");
     var wifbtn = document.getElementById("wifibtn");
     var updbtn = document.getElementById("updatebtn");
@@ -46,10 +46,8 @@ function get_message(data) {
     if ("wif" in msg) {     
         if (msg["wif"] == "scan start") {
             // remove old scan
-            var len = selssid.length - 1;
-            for(var i=len; i>1; i--) {
-                console.log("remove option: ", selssid[i]);
-                selssid.remove(i);
+            while (selssid.options.length > 0) {
+                selssid.remove(0);
             }
         }
     }
@@ -73,56 +71,41 @@ function fnbtnscan() {
 }
 
 function fnbtnsave() {
-  let customssid = document.getElementById("customssid").value;
-  let selectssid = document.getElementById("selectssid").value;
+  let ssid = document.getElementById("ssid").value;
   let pw = document.getElementById("pw").value;
-  console.log(customssid);
-  console.log(selectssid);
+  console.log(ssid);
   console.log(pw);
-  var ssid = ""
-  if (!isEmpty(customssid)) {
-      ssid = customssid;
-  }
-  if (!isEmpty(selectssid)) {
-      ssid = selectssid;
-  }
-  
-  sendMessage(
-    JSON.stringify({
-      "wif": "save",
-      "ssid": ssid,
-      "pw": pw,
-    })
-  );
-  console.log("Button Connect");
+  sendMessage(JSON.stringify({"wif": "save", "ssid": ssid, "pw": pw}));
+  console.log("Button Add");
 }
 
 function fnbtnremove() {
-  let customssid = document.getElementById("customssid").value;
-  let selectssid = document.getElementById("selectssid").value;
+  let ssid = document.getElementById("ssid").value;
   let pw = document.getElementById("pw").value;
-  console.log(customssid);
-  console.log(selectssid);
+  console.log(ssid);
   console.log(pw);
-  var ssid = ""
-  if (!isEmpty(customssid)) {
-      ssid = customssid;
-  }
-  if (!isEmpty(selectssid)) {
-      ssid = selectssid;
-  }
-  
-  sendMessage(
-    JSON.stringify({
-      "wif": "remove",
-      "ssid": ssid,
-      "pw": pw,
-    })
-  );
+  sendMessage(JSON.stringify({"wif": "remove", "ssid": ssid, "pw": pw}));
   console.log("Button Remove");
 }
 
 function fnbtnota() {
   sendMessage(JSON.stringify({"ota":"update"}));
   console.log("Button Update");
+}
+
+function comboInit(ssidlist, ssid)
+{
+  ssid = document.getElementById(ssid);  
+  var idx = ssidlist.selectedIndex;
+  var content = ssidlist.options[idx].innerHTML;
+  if(ssid.value == "")
+    ssid.value = content;	
+}
+
+function combo(ssidlist, ssid)
+{
+  ssid = document.getElementById(ssid);  
+  var idx = ssidlist.selectedIndex;
+  var content = ssidlist.options[idx].innerHTML;
+  ssid.value = content;	
 }

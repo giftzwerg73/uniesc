@@ -106,7 +106,7 @@ function got_answer(data) {
       document.getElementById("txtv").value = "Error";
     }
   }
-  else if ("init" in ans) {
+  if ("init" in ans) {
       esc_data = Array.from(ans["init"][0]);
       esc_names = Array.from(ans["init"][1]);
       Object.assign(esc_dict, ans["init"][2]);
@@ -119,12 +119,8 @@ function got_answer(data) {
       document.getElementById("txti").value = "Choose ESC from List";
       document.getElementById("txtv").value = "Unknown ESC";
   } 
-  else if ("info" in ans) {
+  if ("info" in ans) {
       document.getElementById("info").value = ans["info"];
-  }
-  else {
-      console.log("Got something ???");
-      console.log(ans);
   }
 }
 
