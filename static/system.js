@@ -49,7 +49,7 @@ function get_message(data) {
             while (selssid.options.length > 0) {
                 selssid.remove(0);
             }
-            opt.text = "Choose Network from List"
+            opt.text = "Select SSID"
             selssid.add(opt);
         }
     }
