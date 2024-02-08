@@ -147,18 +147,6 @@ def scan4ap():
     ssids = sorted(ssid.decode('utf-8') for ssid, *_ in wlan_sta.scan())
     return ssids
 
-
-def connectnsave(ssid, password):
-    con = do_connect(ssid, password)
-    if con == None: 
-        return None
-    elif con == True:
-        save_profile(ssid, password)
-        time.sleep(5)
-        return True
-    else:
-        return False
-
 def save_profile(ssid, pw):
     profiles = read_profiles()     
     profiles[ssid] = pw

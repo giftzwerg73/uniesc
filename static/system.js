@@ -59,7 +59,7 @@ function get_message(data) {
         selssid.add(opt);
     }
     if ("info" in msg) {
-      document.getElementById("info").value = msg["info"];
+        document.getElementById("info").value = msg["info"];
     }
 }
  
@@ -101,7 +101,7 @@ function comboInit(ssidlist, ssid)
   var idx = ssidlist.selectedIndex;
   var content = ssidlist.options[idx].innerHTML;
   if(ssid.value == "")
-    ssid.value = content;	
+    ssid.value = content;
 }
 
 function combo(ssidlist, ssid)
@@ -110,5 +110,6 @@ function combo(ssidlist, ssid)
   var idx = ssidlist.selectedIndex;
   var content = ssidlist.options[idx].innerHTML;
   if (idx != 0) 
-    ssid.value = content;
+    ssid.value = content.substring(4,content.length);
+    console.log(ssid.value);
 }
