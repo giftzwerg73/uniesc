@@ -6,6 +6,7 @@ EscListNr = 0
 # hobbywing esc
 esclist.append(HW_WP8BL150_Module())
 esclist.append(HW_MAX8_V2_Module())
+esclist.append(HW_MAX10_SCT_MODULE())
 # team magic esc
 esclist.append(TM_WP8BL100_Module())
 esclist.append(TM_WP8BL150_Module())

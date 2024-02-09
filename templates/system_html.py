@@ -7,7 +7,7 @@ def render(*a, **d):
   <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">
   <meta name=\"author\" content=\"MS\">
   <meta name=\"description\" content=\"Universal ESC Programmer\">
-  <title>ESCProg</title>
+  <title>ESCProg/System</title>
   <link rel=\"stylesheet\" href=\"static/system.css\">
 </head>
 

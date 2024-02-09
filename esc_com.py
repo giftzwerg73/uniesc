@@ -1,10 +1,12 @@
 from machine import Pin, Timer
 from time import sleep_us, ticks_us, ticks_diff, ticks_add
 
-# tx    GP13   Pin_17 
-# rx    GP14   Pin_19
-txgpio = Pin("GP13", Pin.OUT, value=0)
-rxgpio = Pin("GP14", Pin.IN, Pin.PULL_UP)
+# rx        GP13   		Pin_17 
+# tx        GP14   		Pin_19
+# usb power WL_GPIO2   	intern
+txgpio = Pin("GP14", Pin.OUT, value=0)
+rxgpio = Pin("GP13", Pin.IN, Pin.PULL_UP)
+usbpwr = Pin("WL_GPIO2", Pin.IN)
 
 init_ok = 0
 items = 0
@@ -131,7 +133,7 @@ def write_parameter(data):
 
 
 def read_init():  
-    generte_testdata = True # False
+    generte_testdata = True #False # True
     debug = 0
     init_data = [0] * 50
     
@@ -154,14 +156,19 @@ def read_init():
         print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
         print("")
         return 0
-       
-    if rxgpio.value() == 0:
-        print("Switch ESC OFF")
-        while rxgpio.value() == 0:
+          
+    if usbpwr.value() == 1: 
+        print("USB power")
+        if rxgpio.value() == 0:
+            print("Switch ESC OFF")
+            while rxgpio.value() == 0:
+                pass
+            sleep_us(25)
+        print("Switch ESC ON")
+        while rxgpio.value() == 1:
             pass
-    print("Switch ESC ON")
-    while rxgpio.value() == 1:
-        pass
+        sleep_us(25)
+   
     for x in range (0, 47):
         val = read_data()
         if val != None:

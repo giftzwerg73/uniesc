@@ -101,7 +101,13 @@ async def sys(request, ws):
         ujdata = ujson.loads(data)
         if "wpg" in ujdata:
             if ujdata["wpg"] is "system": # websocket for system page ready
-                await ws.send(ujson.dumps({"info":"Ready"}))
+                wsta = get_wlan_status()
+                consid = wsta[1].config("essid")
+                conip = wsta[1].ifconfig()[0]
+                fwver = ugit.get_version().split(":")[1]
+                sysinfo = "Wifi " + consid + " " + conip + ", FW" + fwver + ", HW" + config.HWREF + ", SN" + config.SERIAL 
+                info = "Info: " + sysinfo
+                await ws.send(ujson.dumps({"info":info}))
             else:
                 await ws.send(ujson.dumps({"info":"wpg:???"}))    
         elif "wif" in ujdata:
@@ -149,8 +155,7 @@ async def sys(request, ws):
                     pw = ujdata["pw"]
                     save_profile(selssid, pw)
                     info = str(selssid) + " saved to file"
-                    await ws.send(ujson.dumps({"info":info}))       
-                     
+                    await ws.send(ujson.dumps({"info":info}))               
             else:
                 await ws.send(ujson.dumps({"info":"wif:???"}))
         elif "ota" in ujdata:
@@ -190,3 +195,6 @@ if __name__ == "__main__":
         app.run(port=80)
     except KeyboardInterrupt:
         pass
+
+
+

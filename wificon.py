@@ -206,7 +206,7 @@ def wifi_connect():
                     print("Running update now...")
                     ugit.pull_all(isconnected=True,reboot=False)  
         except OSError:  # open failed -> normal boot
-            pass
+            pass   
     else: # open ap
         wlan_ap = run_ap()
         print(wlan_ap)
