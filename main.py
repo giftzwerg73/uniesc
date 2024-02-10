@@ -1,11 +1,9 @@
-from machine import Pin, Timer
 import time
 import ujson
 import config
 from esc_com import get_init_data, write_parameter
 from esc_text import get_escnamelist, get_esctabledict, test_esctabledict
-from wificon import wifi_connect, get_wlan_status, scan4ap, get_known_stations, save_profile, del_profile
-import ugit
+from wificon import get_wlan_status, scan4ap, get_known_stations, save_profile, del_profile
 from microdot_asyncio import Microdot, Response, send_file
 from microdot_utemplate import render_template
 from microdot_asyncio_websocket import with_websocket
@@ -21,25 +19,6 @@ print("")
 print("---------------------------------------------------------------------")
 print("")
 
-led = Pin("LED", Pin.OUT)
-
-
-def blink(timer):
-    led.toggle()
-
-
-# make network connection
-wifi_connect()
-# now blink
-wstat = get_wlan_status()
-if wstat[0] == "STA":
-    blinkfreq = 1
-elif wstat[0] == "AP":
-    blinkfreq = 2
-else:
-    blinkfreq = 13
-timled = Timer()
-timled.init(freq=blinkfreq, mode=Timer.PERIODIC, callback=blink)
 
 # Initialize MicroDot
 app = Microdot()
@@ -173,7 +152,7 @@ async def sys(request, ws):
                     f.close()
                     await ws.send(ujson.dumps({"info": "Running Update"}))
                     time.sleep(3)
-                    machine.soft_reset()
+                    machine.reset()
                 else:
                     await ws.send(ujson.dumps({"info": "No Internet connection"}))
             else:

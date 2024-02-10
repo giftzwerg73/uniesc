@@ -194,19 +194,6 @@ def wifi_connect():
         print(wlan_sta)
         print("Connected. Network config: ", wlan_sta.ifconfig())
         set_wlan_status(["STA", wlan_sta])
-        # check for updates
-        try:
-            f = open('update.dat', 'r')
-            upf = f.read()
-            f.close()
-            os.remove('update.dat')
-            if upf is "run update":
-                chk = ugit.check_update_version() 
-                if chk is True:   # if version differs
-                    print("Running update now...")
-                    ugit.pull_all(isconnected=True,reboot=False)  
-        except OSError:  # open file failed -> normal boot
-            pass   
     else: # open ap
         wlan_ap = run_ap()
         print(wlan_ap)
