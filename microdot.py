@@ -11,6 +11,7 @@ try:
 except ImportError:  # pragma: no cover
     import traceback
 
+
     def print_exception(exc):
         traceback.print_exc()
 try:
@@ -23,6 +24,7 @@ concurrency_mode = 'threaded'
 try:  # pragma: no cover
     import threading
 
+
     def create_thread(f, *args, **kwargs):
         # use the threading module
         threading.Thread(target=f, args=args, kwargs=kwargs).start()
@@ -30,6 +32,7 @@ except ImportError:  # pragma: no cover
     def create_thread(f, *args, **kwargs):
         # no threads available, call function synchronously
         f(*args, **kwargs)
+
 
     concurrency_mode = 'sync'
 
@@ -94,7 +97,7 @@ def urldecode_bytes(s):
 def urlencode(s):
     return s.replace('+', '%2B').replace(' ', '+').replace(
         '%', '%25').replace('?', '%3F').replace('#', '%23').replace(
-            '&', '%26').replace('=', '%3D')
+        '&', '%26').replace('=', '%3D')
 
 
 class NoCaseDict(dict):
@@ -117,6 +120,7 @@ class NoCaseDict(dict):
         >>> print(d)
         {}
     """
+
     def __init__(self, initial_dict=None):
         super().__init__(initial_dict or {})
         self.keymap = {k.lower(): k for k in self.keys() if k.lower() != k}
@@ -196,6 +200,7 @@ class MultiDict(dict):
         >>> print(d.getlist('sort'))
         ['name', 'email']
     """
+
     def __init__(self, initial_dict=None):
         super().__init__()
         if initial_dict:
@@ -785,10 +790,12 @@ class Microdot():
             def index(request):
                 return 'Hello, world!'
         """
+
         def decorated(f):
             self.url_map.append(
                 (methods or ['GET'], URLPattern(url_pattern), f))
             return f
+
         return decorated
 
     def get(self, url_pattern):
@@ -950,9 +957,11 @@ class Microdot():
             def runtime_error(request, exception):
                 return 'Runtime error'
         """
+
         def decorated(f):
             self.error_handlers[status_code_or_exception_class] = f
             return f
+
         return decorated
 
     def mount(self, subapp, url_prefix=''):

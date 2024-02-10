@@ -2,7 +2,6 @@ from machine import Pin
 from time import sleep_ms
 from esc_com import read_init, read_gpio
 
-
 # debug
 # read_gpio()
 
@@ -17,11 +16,9 @@ while True:
             sleep_ms(250)
         led.on()
         break
-    else: 
+    else:
         for x in range(0, 15):
             led.toggle()
             sleep_ms(100)
         led.on()
         print("Retry Init...\n")
-       
-       
