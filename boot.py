@@ -1,5 +1,5 @@
 from machine import Pin
-from time import sleep_ms
+from time import sleep_us
 from esc_com import read_init
 
 # debug
@@ -14,13 +14,13 @@ while True:
         print("Init success")
         for x in range(0, 5):
             led.toggle()
-            sleep_ms(250)
+            sleep_us(250*1000)
         led.on()
         break
     else:
         for x in range(0, 15):
             led.toggle()
-            sleep_ms(100)
+            sleep_us(100*1000)
         led.on()
         print("Retry Init...\n")
 
