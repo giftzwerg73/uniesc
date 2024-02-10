@@ -1,4 +1,4 @@
-from machine import Pin, Timer
+from machine import Pin
 from time import sleep_us, ticks_us, ticks_diff, ticks_add
 
 # rx        GP13   		Pin_17 
@@ -14,13 +14,6 @@ options_per_item = [0] * 15
 read_values = [0] * 15
 reset_values = [0] * 15
 ack = 0
-
-tmocnt = 0
-
-
-def inctmo(timer):
-    global tmocnt
-    tmocnt += 1
 
 
 def get_init_data():

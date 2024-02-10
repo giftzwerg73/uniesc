@@ -1,11 +1,9 @@
-from machine import Pin, Timer
+from machine import Pin
 from time import sleep_ms
-from esc_com import read_init, read_gpio
-from wificon import wifi_connect, get_wlan_status
-import os
-import ugit
+from esc_com import read_init
 
 # debug
+# from esc_com import read_gpio
 # read_gpio()
 
 led = Pin("LED", Pin.OUT)
@@ -26,6 +24,12 @@ while True:
         led.on()
         print("Retry Init...\n")
 
+
+# import other needed stuff
+from machine import Timer
+from wificon import wifi_connect, get_wlan_status
+import os
+import ugit
 
 # now blink
 timled = Timer()
@@ -48,7 +52,7 @@ if wstat[0] == "STA":
             if chk is True:   # if version differs
                 timled.init(freq=0.33, mode=Timer.PERIODIC, callback=blink)
                 print("Running update now...")
-                ugit.pull_all(isconnected=True,reboot=False)  
+                ugit.pull_all(isconnected=True,reboot=True)  
     except OSError:  # open file failed -> normal boot
         pass   
     blinkfreq = 1
