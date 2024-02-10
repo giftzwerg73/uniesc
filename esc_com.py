@@ -177,10 +177,10 @@ def read_init():
         except KeyboardInterrupt:
             gen_test_data(0, init_data)
             print("")
-            print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+            print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1!!!!!")
             print("Skipping read_init()")          
             print("Warning: Using invalid generated Testdata")
-            print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+            print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
             print("")
             return 0
 
