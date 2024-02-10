@@ -133,14 +133,8 @@ def write_parameter(data):
         print("Set Parameter failed")
         return -1
 
-
-def read_init():
-    generte_testdata = False  # True
-    debug = 0
-    init_data = [0] * 50
-
-    if generte_testdata:
-        _init_ok = 1
+def gen_test_data(status, init_data):
+        _init_ok = status
         _items = 4
         _options_per_item = [2, 7, 5, 8, 4, 3, 3, 2, 7, 1, 1, 5, 0, 0, 0]
         _read_values = [1, 0, 5, 4, 1, 1, 1, 1, 4, 0, 0, 0, 0, 0, 0]
@@ -152,6 +146,15 @@ def read_init():
         init_data[31:46] = _options_per_item
         init_data[46] = _ack
         set_init_data(_init_ok, init_data)
+        
+        
+def read_init():
+    generte_testdata = False  # True
+    debug = 0
+    init_data = [0] * 50
+
+    if generte_testdata:
+        gen_test_data(1, init_data)
         print("")
         print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
         print("Warning: Using generated Testdata")
@@ -160,16 +163,26 @@ def read_init():
         return 0
 
     if usbpwr.value() == 1:
-        print("USB power")
-        if rxgpio.value() == 0:
-            print("Switch ESC OFF")
-            while rxgpio.value() == 0:
+        try:
+            print("USB power")
+            if rxgpio.value() == 0:
+                print("Switch ESC OFF")
+                while rxgpio.value() == 0:
+                    pass
+                sleep_us(25)
+            print("Switch ESC ON")
+            while rxgpio.value() == 1:
                 pass
             sleep_us(25)
-        print("Switch ESC ON")
-        while rxgpio.value() == 1:
-            pass
-        sleep_us(25)
+        except KeyboardInterrupt:
+            gen_test_data(0, init_data)
+            print("")
+            print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+            print("Skipping read_init()")          
+            print("Warning: Using invalid generated Testdata")
+            print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+            print("")
+            return 0
 
     for x in range(0, 47):
         val = read_data()

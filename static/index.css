@@ -23,7 +23,7 @@ body {
   grid-template-columns: repeat(4, 1fr);
   gap: 10px;
   grid-auto-rows: minmax(90px, auto);
-  max-width: 100%;
+  max-width: 600px; /*100%;*/
   margin: 0 auto;
   background-color: black;
   border-radius: 5px;

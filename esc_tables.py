@@ -20,9 +20,9 @@ class HW_WP8BL150_Module:
             self.ValNr.append(len(self.ItemValue[x]) - 1)
 
 
-class HW_MAX8_V2_Module:
+class HW_MAX8_Module:
     def __init__(self):
-        self.ESCName = "HW EZRUN MAX8 V2"
+        self.ESCName = "HW EZRUN MAX8"
         self.ItemName = ["Running Mode",
                          "LiPo Cells",
                          "Cutoff Voltage",
@@ -151,22 +151,34 @@ class TO_BRAINZ8_Module:
 
 
 # ***** tables for arrma esc *****      
-class ARRMA_WP8BL150_Module:
+class ARRMA_BLX185_Module:
     def __init__(self):
-        self.ESCName = "ARRMA BLS185"
-        self.ItemName = ["Running Mode",
-                         "Drag Brake Force",
-                         "Low Voltage Cut-Off",
-                         "Start Mode(Punch)",
-                         "Max Brake Force"]
-        self.ItemValue = [["Forward with Brake", "Forward/Reverse with Brake", "Forward and Reverse"],
-                          ["0%", "5%", "10%", "20%", "40%", "60%", "80%", "100%"],
-                          ["Non-Protection", "2.6V/Cell", "2.8V/Cell", "3.0V/Cell", "3.2V/Cell", "3.4V/Cell"],
+        self.ESCName = "ARRMA BLX185"
+        self.ItemName = ["Low Voltage Cut-Off",
+                         "Punch Setting",
+                         "Brake Strength",
+                         "Running Mode",
+                         "Motor Rotation"]
+        self.ItemValue = [["LIPO", "NIMH"],
                           ["Level1", "Level2", "Level3", "Level4", "Level5", "Level6", "Level7", "Level8", "Level9"],
-                          ["25%", "50%", "75%", "100%", "Disable"]]
+                          ["25%", "37.5%", "50%"],
+                          ["Fwd/Brk", "Fwd/Brk/Rev"],         
+                          ["Reverse (CW)", "Normal (CCW)"]]
 
         self.EscAuthor = "Author: MS, 03.10.2023"
         self.ItemNr = len(self.ItemName)
         self.ValNr = []
         for x in range(0, self.ItemNr):
             self.ValNr.append(len(self.ItemValue[x]) - 1)
+            
+            
+ 
+
+
+
+
+
+
+
+
+

@@ -82,7 +82,7 @@ async def esc(request, ws):
         elif "init" in ujdata:
             init_data = []
             if ujdata["init"] == "???":
-                if escdata[0] == 1:
+                if escdata[0] == 1: # only if valid
                     init_data.append(escdata)
                     init_data.append(escnames)
                     init_data.append(esctabledict)

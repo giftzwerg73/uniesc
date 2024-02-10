@@ -2,18 +2,15 @@
 def render(infolist):
     yield """<!DOCTYPE html>
 <html lang=\"en\" dir=\"ltr\">
- 
 <head>
   <meta charset=\"utf-8\">
   <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">
   <meta name=\"author\" content=\"MS\">
   <meta name=\"description\" content=\"Universal ESC Programmer\">
-  <title>ESCProg</title>
+  <title>UniESC</title>
   <link rel=\"stylesheet\" href=\"static/index.css\">
 </head>
- 
 <body>
- 
 <div class=\"wrapper\">
   <div class=\"one\">
     <select class=\"sel\" onchange=\"mkdisp()\" id=\"escname\">
@@ -62,10 +59,7 @@ def render(infolist):
 	  <input type=\"text\" class=\"info-box\" id=\"info\" disabled>
   </div>
 </div>
- 
 <script type=\"text/javascript\" src=\"static/index.js\"></script>
- 
 </body>
- 
 </html>
 """
