@@ -1,21 +1,20 @@
 @charset "UTF-8";
 
 * {
-  box-sizing: border-box;
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
 }
 
-html, body {
-  height: 100%;
-  font-family: Roboto, sans-serif;
-  font-size: 12pt;
-  overflow: hidden;
+html {
+    background-color: white;
 }
-
+    
 body {
-  display: grid;
-  grid-template-rows: 1fr;
-  align-items: center;
-  justify-items: center;
+    min-height: 100vh;
+    max-width: 400px;
+    margin: 0 auto;
+    padding-top: 5px;
 }
 
 .wrapper {
@@ -23,7 +22,7 @@ body {
   grid-template-columns: repeat(3, 1fr);
   gap: 10px;
   grid-auto-rows: minmax(90px, auto);
-  max-width: 600px; /*100%;*/
+  max-width: 100%;
   margin: 0 auto;
   background-color: black;
   border-radius: 5px;
@@ -63,7 +62,7 @@ body {
 
 .five {
   grid-column: 3/4;
-  grid-row:  4;
+  grid-row: 4;
 }
 
 .six {
