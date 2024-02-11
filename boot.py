@@ -50,7 +50,7 @@ if wstat[0] == "STA":
         if upf is "run update":
             chk = ugit.check_update_version() 
             if chk is True:   # if version differs
-                timled.init(freq=0.33, mode=Timer.PERIODIC, callback=blink)
+                timled.init(freq=5, mode=Timer.PERIODIC, callback=blink)
                 print("Running update now...")
                 ugit.pull_all(isconnected=True,reboot=True)  
     except OSError:  # open file failed -> normal boot
