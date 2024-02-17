@@ -6,59 +6,93 @@ from esc_com import read_init
 # from esc_com import read_gpio
 # read_gpio()
 
-led = Pin("LED", Pin.OUT)
-while True:
-    led.on()
-    ret = read_init()
-    if ret == 0:
-        print("Init success")
-        for x in range(0, 5):
-            led.toggle()
-            sleep_us(250*1000)
+
+# usb power WL_GPIO2   	intern
+usbpwr = Pin("WL_GPIO2", Pin.IN).value()
+led = Pin("LED", Pin.OUT, value=1)
+
+if usbpwr == 0:
+    while True:
         led.on()
-        break
-    else:
-        for x in range(0, 15):
-            led.toggle()
-            sleep_us(100*1000)
-        led.on()
-        print("Retry Init...\n")
+        ret = read_init()
+        if ret == 0:
+            print("Init success")
+            for x in range(0, 5):
+                led.toggle()
+                sleep_us(250*1000)
+            led.on()
+            break
+        else:
+            for x in range(0, 15):
+                led.toggle()
+                sleep_us(100*1000)
+            led.on()
+            print("Retry Init...\n")
 
 
 # import other needed stuff
 from machine import Timer
 from wificon import wifi_connect, get_wlan_status
+from esc_com import usb_init
 import os
 import ugit
 
-# now blink
+# check for updates
+update = 0
+try:
+    f = open('update.dat', 'r')
+    upf = f.read()
+    f.close()
+    os.remove('update.dat')
+    if upf is "run update":
+        update = 1
+except OSError:  # open file failed -> no update go on
+    pass
+
+# blink timer
 timled = Timer()
 
-def blink(timer):
-    led.toggle() 
+if update == 0 and usbpwr == 1:
+    timled.init(freq=0.333, mode=Timer.PERIODIC, callback=lambda t:led.toggle())
+    if usb_init() == 1:
+        timled.deinit()
+        while True:
+            led.on()
+            ret = read_init()
+            if ret == 0:
+                print("Init success")
+                for x in range(0, 5):
+                    led.toggle()
+                    sleep_us(250*1000)
+                led.on()
+                break
+            else:
+                for x in range(0, 15):
+                    led.toggle()
+                    sleep_us(100*1000)
+                led.on()
+                print("Retry Init...\n")
+          
 
+ 
 # make network connection
 wifi_connect()
 wstat = get_wlan_status()
 if wstat[0] == "STA":
-    # check for updates
-    try:
-        f = open('update.dat', 'r')
-        upf = f.read()
-        f.close()
-        os.remove('update.dat')
-        if upf is "run update":
-            chk = ugit.check_update_version() 
-            if chk is True:   # if version differs
-                timled.init(freq=5, mode=Timer.PERIODIC, callback=blink)
-                print("Running update now...")
-                ugit.pull_all(isconnected=True,reboot=True)  
-    except OSError:  # open file failed -> normal boot
-        pass   
+    # check update
+    if update == 1:
+        chk = ugit.check_update_version() 
+        if chk is True:   # if version differs
+            timled.init(freq=5, mode=Timer.PERIODIC, callback=lambda t:led.toggle())
+            print("Running update now...")
+            ugit.pull_all(isconnected=True,reboot=True)
+            while True:
+                pass
+
     blinkfreq = 1
 elif wstat[0] == "AP":
     blinkfreq = 2
 else:
     blinkfreq = 13 
 
-timled.init(freq=blinkfreq, mode=Timer.PERIODIC, callback=blink)
+timled.init(freq=blinkfreq, mode=Timer.PERIODIC, callback=lambda t:led.toggle())

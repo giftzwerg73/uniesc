@@ -70,9 +70,8 @@ async def esc(request, ws):
                 else:
                     info = "Init from " + str(config.SERIAL) + " FAILED"
                 await ws.send(ujson.dumps({"info": info}))
-
             else:
-                await ws.send(ujson.dumps({"info": "Init Failed"}))
+                await ws.send(ujson.dumps({"info": "Init Request FAILED"}))
         else:
             await ws.send(ujson.dumps({"info": "Unknown Command"}))
 

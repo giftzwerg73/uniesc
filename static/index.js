@@ -1,5 +1,6 @@
 var edit_item = 0;
 var esc_selname = "None";
+var esc_isinit = 0;
 var esc_data = [];
 var esc_names = [];
 var esc_dict = {};
@@ -28,6 +29,7 @@ function get_esc_select() {
 
 function mkdisp()
 {
+  if (esc_isinit == 1) {
     get_esc_select()
     var listname = esc_dict[esc_selname]
     var itemnr = edit_item
@@ -36,65 +38,80 @@ function mkdisp()
     {
         document.getElementById("nri").value = itemnr + 1;
         document.getElementById("nrv").value = valnr + 1;
+        document.getElementById("txti").value = "--"
+        document.getElementById("txtv").value = "--";
     } else {
         document.getElementById("nri").value = itemnr + 1;
         document.getElementById("nrv").value = valnr + 1;
         document.getElementById("txti").value = listname[0][itemnr];
         document.getElementById("txtv").value = listname[1][itemnr][valnr];
     }
+  }
 }
     
 function inc_item() {
+  if (esc_isinit == 1) {
 	if (edit_item < esc_data[1])
 	{
 		edit_item++;
 	}
     mkdisp();
     console.log(esc_data[3]);
+  }
 }
  
 function dec_item() {
+  if (esc_isinit == 1) {
 	if (edit_item >  0)
 	{
 		edit_item--; 
 	}
     mkdisp();
     console.log(esc_data[3]);
+  }
 }
 
 function inc_val() {
+  if (esc_isinit == 1) {
 	if (esc_data[3][edit_item] < esc_data[2][edit_item])
 	{
 		esc_data[3][edit_item]++;
 	}
     mkdisp();
     console.log(esc_data[3]);
+  }
 }
  
 function dec_val() {
+  if (esc_isinit == 1) {
 	if (esc_data[3][edit_item] > 0 )
 	{
 		esc_data[3][edit_item]--;
 	}
     mkdisp();
     console.log(esc_data[3]);
+  }
 }
  
 function save() {
+  if (esc_isinit == 1) {
 	document.getElementById("txti").value = "Saving to ESC";
     document.getElementById("txtv").value = "-------";
     sendMessage(JSON.stringify({"save": esc_data[3]}));
     console.log("Saving data:");
     console.log(esc_data[3]);
+  }
 }
 
 function reset() {
+  if (esc_isinit == 1) {
 	esc_data[3] = Array.from(esc_data[4]);
     document.getElementById("nri").value = edit_item + 1;
     document.getElementById("nrv").value = esc_data[3][edit_item] + 1;
     document.getElementById("txti").value = "Values Resetted";
     document.getElementById("txtv").value = "Press Save to write to ESC";
     console.log(esc_data[3]);
+  }
 }
 
 function got_answer(data) {
@@ -110,6 +127,7 @@ function got_answer(data) {
       esc_data = Array.from(ans["init"][0]);
       esc_names = Array.from(ans["init"][1]);
       Object.assign(esc_dict, ans["init"][2]);
+      esc_isinit = 1;
       console.log(esc_data);
       console.log(esc_names);
       console.log(esc_dict);
