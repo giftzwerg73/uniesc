@@ -5,42 +5,36 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="author" content="MS">
   <meta name="description" content="Universal ESC Programmer">
-  <title>UniESC/System</title>
+  <title>UniESC</title>
   <link rel="stylesheet" href="static/system.css">
 </head>
 <body>
-<div class="wrapper"> 
-    <div class="one">
-       <label class="label" for="ssidlist">Visiable Wifi Networks:</label>
-       <select class="sel" name="ssidlist" id="ssidlist" onChange="combo(this, 'ssid')">
-          <option>Run Scan first</option>
-       </select>
+<div id="wrapper">
+	<div id="top">
+		<input type="text" class="info-box" id="info" disabled>
+        <label class="label" for="ssidlist">Visiable Wifi Networks:</label>
+        <select class="sel" name="ssidlist" id="ssidlist" onChange="combo(this, 'ssid')">
+			<option>Run Scan first</option>
+		</select> 
+		<label class="label" for="ssid">SSID:</label>
+        <input class="sel" name="ssid" id="ssid">
+        <label class="label" for="pw">Enter Password:</label>
+        <input class="sel" name="pw" id="pw">
+	</div>	
+	
+	<div id="wifbtn">
+        <input type="button" value="Delete" onclick="fnbtnremove()" id="del" name="del"/>
+        <input type="button" value="Scan" onclick="fnbtnscan()" id="scan" name="scan"/>
+        <input type="button" value="Save" onclick="fnbtnsave()" id="save" name="save"/>
     </div>
-    <div class="onehalf">  
-       <label class="label" for="ssid">SSID:</label>
-       <input class="sel" name="ssid" id="ssid">
-    </div>       
-    <div class="two">   
-       <label class="label" for="pw">Enter Password:</label>
-       <input class="sel" name="pw" id="pw">
-    </div>
-    <div class="three">     
-        <input type="button" value="Del" id="wifibtn" onclick="fnbtnremove()" />
-    </div>   
-    <div class="four">  
-        <input type="button" value="Scan" id="wifibtn" onclick="fnbtnscan()" />
-    </div>  
-    <div class="five">  
-        <input type="button" value="Add" id="wifibtn" onclick="fnbtnsave()" />
-    </div>
-    <div class="six" >
-		<label class="label" for="updatebtn"><br></label>
-        <input type="button" value="Update" id="updatebtn" onclick="fnbtnota()" />
-    </div>
-    <div class="seven">
-		<label class="label" for="info"><br></label>
-	    <input type="text" class="info-box" id="info" disabled>
-    </div>
+    
+    <div id="space">	
+	</div>	
+	    
+	<div id="bot">
+		<label class="label" for="update">Update Firmare:</label>
+        <input type="button" value="Update" onclick="fnbtnota()" id="update" name="update"/>
+	</div>
 </div>
 <script src="static/system.js"></script>
 </body>

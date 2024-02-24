@@ -2,107 +2,92 @@
 
 * {
     box-sizing: border-box;
-    margin: 0;
     padding: 0;
 }
 
-html {
-    background-color: white;
-}
-    
 body {
-    max-height: 100vh;
-    max-width: 480px;
-    margin: 0 auto;
-    padding-top: 5px;
+   margin: 0;
+   height: 100%;
 }
 
-.wrapper {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 10px;
-  grid-auto-rows: minmax(90px, auto);
+#wrapper {
+  height: 100vh;
   max-width: 100%;
-  margin: 0 auto;
+  margin: 0px auto;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
   background-color: black;
-  border-radius: 5px;
+  border: 2px solid red;
   padding: 7px;
 }
 
-.wrapper > div {
-  padding: 0.1em;
-  height: 100%;
-  width: 100%;
-  place-self: center;
+#wrapper > * {
+	padding: 5px;
 }
 
-.one {
-  grid-column: 1/4;
-  grid-row: 1;
+#top {
+	border: 2px solid white;
+	margin-bottom: 21px;
 }
 
-.onehalf {
-  grid-column: 1/4;
-  grid-row: 2;
+#wifbtn {
+	border: 2px solid white;
+	display: grid;
+	grid-template-columns: 1fr 1fr 1fr;
+	gap: 10px;
 }
 
-.two {
-  grid-column: 1/4;
-  grid-row: 3;
+#space {
+	height: 100%;
 }
 
-.three {
-  grid-column: 1/2;
-  grid-row: 4;
-}
-.four {
-  grid-column: 2/3;
-  grid-row: 4;
+#bot {
+    margin-top: 7px;
+	border: 2px solid white;
 }
 
-.five {
-  grid-column: 3/4;
-  grid-row: 4;
+.info-box {
+    font-family: Roboto, sans-serif;
+    font-size: 1.0em;
+    background-color: #dcdbe1;
+    border: solid black 0.5px;
+    color: black;
+    border-radius: 5px;
+    width: 100%;
+    padding: 5px;
 }
 
-.six {
-  grid-column: 1/4;
-  grid-row: 5;
-}
-
-.seven {
-  grid-column: 1/4;
-  grid-row: 6;
+.label {
+    display: block;
+    font-family: Roboto, sans-serif;
+    font-size: 1.0em;
+    color: white;
+    padding: 5px;
 }
 
 .sel {
     font-family: Roboto, sans-serif;
-    font-size: 1.5em;
+    font-size: 1.0em;
     background-color: #64278f;
     border: solid black 0.5px;
     color: white;
     border-radius: 5px;
     width: 100%;
-    height: 65%;
-}
-
-.label {
-    font-family: Roboto, sans-serif;
-    font-size: 1.5em;
-    color: white;
+    padding: 5px;
 }
 
 input[type=button] {
     font-family: Roboto, sans-serif;
-    font-size: 1.5em;
+    font-size: 1.0em;
     background-color: #64278f;
     border: solid black 0.5px;
     color: white;
     border-radius: 5px;
     width: 100%;
-    height: 85%;
     outline: none;
     margin: auto;
+    padding: 5px;
 }
 
 input:active[type=button] {
@@ -110,16 +95,5 @@ input:active[type=button] {
     -webkit-box-shadow: inset 0px 0px 5px #c1c1c1;
     -moz-box-shadow: inset 0px 0px 5px #c1c1c1;
     box-shadow: inset 0px 0px 5px #c1c1c1;
-}
-
-.info-box {
-    font-family: Roboto, sans-serif;
-    font-size: 1.25em;
-    background-color: #dcdbe1;
-    border: solid black 0.5px;
-    color: black;
-    border-radius: 5px;
-    width: 100%;
-    height: 65%;
 }
 
