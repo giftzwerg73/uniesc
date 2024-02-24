@@ -12,7 +12,7 @@ class HW_WP8BL150_Module:
         self.ItemName = ["Running Mode",
                          "Drag Brake Force",
                          "Low Voltage Cut-Off",
-                         "Start Mode(Punch)",
+                         "Start Mode (Punch)",
                          "Max Brake Force"]
         self.ItemValue = [["Forward with Brake", "Forward/Reverse with Brake", "Forward and Reverse"],
                           ["0%", "5%", "10%", "20%", "40%", "60%", "80%", "100%"],
@@ -99,7 +99,7 @@ class TM_WP8BL100_Module:
         self.ItemName = ["Running Mode",
                          "Drag Brake Force",
                          "Low Voltage Cut-Off",
-                         "Start Mode(Punch)",
+                         "Start Mode (Punch)",
                          "Max Brake Force"]
         self.ItemValue = [["Forward with Brake", "Forward/Reverse with Brake", "Forward and Reverse"],
                           ["0%", "5%", "10%", "20%", "40%", "60%", "80%", "100%"],
@@ -120,7 +120,7 @@ class TM_WP8BL150_Module:
         self.ItemName = ["Running Mode",
                          "Drag Brake Force",
                          "Low Voltage Cut-Off",
-                         "Start Mode(Punch)",
+                         "Start Mode (Punch)",
                          "Max Brake Force"]
         self.ItemValue = [["Forward with Brake", "Forward/Reverse with Brake", "Forward and Reverse"],
                           ["0%", "5%", "10%", "20%", "40%", "60%", "80%", "100%"],
@@ -142,7 +142,7 @@ class TO_BRAINZ8_Module:
         self.ItemName = ["Running Mode",
                          "Drag Brake Force",
                          "Low Voltage Cut-Off",
-                         "Start Mode(Punch)",
+                         "Start Mode (Punch)",
                          "Max Brake Force"]
         self.ItemValue = [["Forward with Brake", "Forward/Reverse with Brake", "Forward and Reverse"],
                           ["0%", "5%", "10%", "20%", "40%", "60%", "80%", "100%"],
