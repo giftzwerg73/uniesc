@@ -172,7 +172,8 @@ def read_init():
         return -1
     
     
-def gen_test_data(status, init_data):
+def gen_test_data(status):
+        init_data = [0] * 50
         _init_ok = status
         _items = 4
         _options_per_item = [2, 7, 5, 8, 4, 3, 3, 2, 7, 1, 1, 5, 0, 0, 0]
@@ -187,36 +188,15 @@ def gen_test_data(status, init_data):
         set_init_data(_init_ok, init_data)
         
         
-def usb_init():
-    debug = 0
-    init_data = [0] * 50
-    
+def usb_init(): 
     print("USB power")
-    if debug == 1:
-        gen_test_data(1, init_data)
-        print("")
-        print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
-        print("Warning: Using generated Testdata")
-        print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
-        print("")
-        return 0
-    try:
-        if rxgpio.value() == 0:
-            print("Switch ESC OFF")
-            while rxgpio.value() == 0:
-                pass
-            sleep_us(25)
-        print("Switch ESC ON")
-        while rxgpio.value() == 1:
-            pass
-        sleep_us(25)
-        return 1
-    except KeyboardInterrupt:
-            gen_test_data(0, init_data)
-            print("")
-            print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
-            print("Skipping read_init()")          
-            print("Warning: Using invalid generated Testdata")
-            print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
-            print("")
-            return 0      
+    # wait until rx is stable 1 for 100ms
+    x = 0
+    while x < 10000:
+        if rxgpio.value() == 1:
+            x = 0
+        else:
+            x += 1
+        sleep_us(10)
+    print("Boot/Reboot ESC now")
+    return 1   

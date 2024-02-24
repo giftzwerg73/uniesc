@@ -1,6 +1,6 @@
 from machine import Pin
 from time import sleep_us
-from esc_com import read_init
+from esc_com import read_init, gen_test_data
 
 # debug
 # from esc_com import read_gpio
@@ -53,12 +53,22 @@ except OSError:  # open file failed -> no update go on
 timled = Timer()
 
 if update == 0 and usbpwr == 1:
-    timled.init(freq=0.333, mode=Timer.PERIODIC, callback=lambda t:led.toggle())
+    timled.init(freq=7, mode=Timer.PERIODIC, callback=lambda t:led.toggle())
     if usb_init() == 1:
         timled.deinit()
         while True:
             led.on()
-            ret = read_init()
+            try:
+                ret = read_init()
+            except KeyboardInterrupt:
+                gen_test_data(1)
+                print("")
+                print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+                print("Skipping read_init()")          
+                print("Warning: Using invalid generated Testdata")
+                print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+                print("")
+                ret = 0  
             if ret == 0:
                 print("Init success")
                 for x in range(0, 5):
@@ -72,7 +82,8 @@ if update == 0 and usbpwr == 1:
                     sleep_us(100*1000)
                 led.on()
                 print("Retry Init...\n")
-          
+    else:
+        timled.deinit()  
 
  
 # make network connection

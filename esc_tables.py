@@ -1,3 +1,10 @@
+# ***** export list with ESC-Info *****
+esclist = []
+def get_esclist():
+    global esclist
+    return esclist
+
+
 # ***** tables for hobbywing esc *****
 class HW_WP8BL150_Module:
     def __init__(self):
@@ -173,8 +180,18 @@ class ARRMA_BLX185_Module:
             
             
  
-
-
+# ***** make big list of all ESCs ***** 
+# hobbywing esc
+esclist.append(HW_WP8BL150_Module())
+esclist.append(HW_MAX8_Module())
+esclist.append(HW_MAX10_SCT_MODULE())
+# team magic esc
+esclist.append(TM_WP8BL100_Module())
+esclist.append(TM_WP8BL150_Module())
+# kosho esc
+esclist.append(TO_BRAINZ8_Module())
+# arrma esc
+esclist.append(ARRMA_BLX185_Module())
 
 
 

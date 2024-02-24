@@ -57,22 +57,18 @@ def get_sta_con(): # return a working WLAN(STA_IF) instance or None
             ssid = ssid.decode('utf-8')
             encrypted = authmode > 0
             print("ssid: %s chan: %d rssi: %d authmode: %s" % (ssid, channel, rssi, AUTHMODE.get(authmode, '?')))
-            if encrypted:
-                if ssid in profiles:
+            if ssid in profiles:
+                if encrypted:
                     password = profiles[ssid]
                     connected = do_connect(ssid, password)
                 else:
-                    print("skipping unknown encrypted network")
-            else:  # open
-                connected = do_connect(ssid, None)
+                    connected = do_connect(ssid, None)
             if connected:
                 break
-    
+            
     if connected is False:
         # not connected to station
         wlan_sta.active(False)
-        while wlan_sta.active() == True:
-            pass
         return None
     else:
         return wlan_sta
@@ -81,20 +77,19 @@ def get_sta_con(): # return a working WLAN(STA_IF) instance or None
 def run_ap():
     # deactivate ap
     wlan_ap.active(False)
-    while wlan_ap.active() is True:
+    while wlan_ap.active() == True:
         pass
-    # default ap config
-    wlan_ap.config(essid="escAP666", password="escAP666", hostname="escAP666")
     profiles = read_profiles()
     if ap_ssid in profiles:
         ap_password = profiles[ap_ssid]
         wlan_ap.config(essid=ap_ssid, password=ap_password, hostname=hostnm)
     else:
-        print("No AP-SSID found -> Using defaults")
+        # default ap config
+        wlan_ap.config(essid="escAP666", password="escAP666", hostname="escAP666")  
     
     # activate ap
     wlan_ap.active(True)
-    while wlan_ap.active() is False:
+    while wlan_ap.active() == False:
         pass
     wlan_ap.ifconfig((IP, SUBNET, GATEWAY, DNS))
     return wlan_ap
@@ -188,8 +183,8 @@ def wifi_connect():
     print("SUB      " + SUBNET)
     print("DNS      " + DNS)
     # try to connect to station
-    wlan_sta = get_sta_con()   
-    if wlan_sta is not None:
+    wlan_sta = get_sta_con()
+    if wlan_sta != None:
         # connected to station
         print(wlan_sta)
         print("Connected. Network config: ", wlan_sta.ifconfig())

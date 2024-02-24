@@ -28,8 +28,12 @@ Response.default_content_type = 'text/html'
 # root route
 @app.route('/')
 async def index(request):
-    # render in esc names
-    return render_template('index.html', infolist=escnames)
+    # render in esc names and items to select
+    itemnrlist = []
+    for x in range(1, escdata[1]+2):
+        item = "Item " + str(x)
+        itemnrlist.append(item)
+    return render_template('index.html', escnamelist=escnames, itemlist=itemnrlist)
 
 
 # system route
@@ -48,13 +52,17 @@ async def esc(request, ws):
         if "save" in ujdata:
             pld = ujdata["save"]
             if len(pld) == 15:
-                if write_parameter(pld) == 0:  # write data to esc
+                print("Saving data...")
+                try: 
+                  if write_parameter(pld) == 0:  # write data to esc
                     escdata[3] = pld
                     print("Written data:")
                     print(escdata[3])  # update data
-                    await ws.send(ujson.dumps({"saved": "ok"}))
-                else:
+                    await ws.send(ujson.dumps({"saved": "ok", "info": "Saving Done"}))
+                  else:
                     await ws.send(ujson.dumps({"saved": "error", "info": "Saving Failed"}))
+                except KeyboardInterrupt:
+                    await ws.send(ujson.dumps({"saved": "error", "info": "Saving Aborted"}))
             else:
                 await ws.send(ujson.dumps({"saved": "error", "info": "Data NOT valid"}))
 

@@ -1,4 +1,3 @@
-var edit_item = 0;
 var esc_selname = "None";
 var esc_isinit = 0;
 var esc_data = [];
@@ -14,10 +13,6 @@ var esc_data = [ 1,
 				 85 ];
 */
 
-document.getElementById("nri").value = "--";
-document.getElementById("nrv").value = "--";
-document.getElementById("txti").value = "--"
-document.getElementById("txtv").value = "--";
 console.log(esc_data[3]);
     
 function get_esc_select() {  
@@ -27,78 +22,106 @@ function get_esc_select() {
     console.log(esc_selname);
 }
 
-function mkdisp()
-{
+function checknrnames(list_names) {
+    var nritems = esc_data[1];
+    var ret = 1;
+    var lenitems = 0;
+    var lenvals = 0;
+    lenitems = list_names[0].length;
+    if ((nritems+1) == lenitems) { // nr items ok
+       for (x=0;x<=nritems;x++) {
+         lenvals = list_names[1][x].length;
+         if ((esc_data[2][x]+1) != lenvals) {
+             ret = 0;
+         }
+       }
+    } else {
+        ret = 0;
+    }
+    return ret; 
+}
+
+function mkdisp() {
   if (esc_isinit == 1) {
     get_esc_select()
     var listname = esc_dict[esc_selname]
-    var itemnr = edit_item
-    var valnr = esc_data[3][itemnr]
     if (esc_selname == "None")
     {
-        document.getElementById("nri").value = itemnr + 1;
-        document.getElementById("nrv").value = valnr + 1;
-        document.getElementById("txti").value = "--"
-        document.getElementById("txtv").value = "--";
+        for (x=0;x<=esc_data[1];x++) {
+            var valcnt = esc_data[2][x];
+            var valnr = esc_data[3][x];
+            var itemnrstr = x+1
+            var selidstr = "Item " + itemnrstr.toString();
+            var lblidstr = "LBL_" + selidstr;
+            var item = document.getElementById(selidstr);
+            var lbl = document.getElementById(lblidstr);
+            var itemstr = "Item " + itemnrstr.toString();
+            // rename label
+            lbl.textContent = itemstr;
+            // remove old value options for item
+            while (item.options.length > 0) {
+                item.remove(0);
+            }
+            // add options for item
+            for (val=0;val<=valcnt;val++) {
+                var opt = document.createElement("option");
+                var valnrstr = val+1
+                opt.text = "Value " + valnrstr.toString();
+                item.add(opt);
+            }
+            // set actual value
+            item.options.selectedIndex = valnr;
+        }
     } else {
-        document.getElementById("nri").value = itemnr + 1;
-        document.getElementById("nrv").value = valnr + 1;
-        document.getElementById("txti").value = listname[0][itemnr];
-        document.getElementById("txtv").value = listname[1][itemnr][valnr];
+      // check if names fit nr items and nr values
+      if( checknrnames(listname) == 1) { 
+        document.getElementById("info").value = "Selected: " + esc_selname;
+        for (x=0;x<=esc_data[1];x++) {
+            var valcnt = esc_data[2][x];
+            var valnr = esc_data[3][x];
+            var itemnrstr = x+1
+            var selidstr = "Item " + itemnrstr.toString();
+            var lblidstr = "LBL_" + selidstr;
+            var item = document.getElementById(selidstr);
+            var lbl = document.getElementById(lblidstr);
+            var itemstr = "Item " + itemnrstr.toString() + " : " + listname[0][x];
+            // rename label
+            lbl.textContent = itemstr;
+            // remove old value options for item
+            while (item.options.length > 0) {
+                item.remove(0);
+            }
+            // add options for item
+            for (val=0;val<=valcnt;val++) {
+                var opt = document.createElement("option");
+                var valnrstr = val+1
+                opt.text = "Value " + valnrstr.toString() + " : " + listname[1][x][val];
+                item.add(opt);
+            }
+            // set actual value
+            item.options.selectedIndex = valnr;
+        }
+      } else { // names mismatch esc_data 
+          console.log("Names missmatch")
+          document.getElementById("info").value = "ESC NAMES MISSMATCH!!!"; 
+      }
     }
   }
 }
-    
-function inc_item() {
-  if (esc_isinit == 1) {
-	if (edit_item < esc_data[1])
-	{
-		edit_item++;
-	}
-    mkdisp();
-    console.log(esc_data[3]);
-  }
-}
- 
-function dec_item() {
-  if (esc_isinit == 1) {
-	if (edit_item >  0)
-	{
-		edit_item--; 
-	}
-    mkdisp();
-    console.log(esc_data[3]);
-  }
-}
 
-function inc_val() {
-  if (esc_isinit == 1) {
-	if (esc_data[3][edit_item] < esc_data[2][edit_item])
-	{
-		esc_data[3][edit_item]++;
-	}
-    mkdisp();
+function update_escdata(onchgsel) {
+    var getselectindex = onchgsel.options.selectedIndex;
+    var mysplitid = onchgsel.id.split("Item ");
+    var getselectitemnr = parseInt(mysplitid[1] - 1);
+    esc_data[3][getselectitemnr] = getselectindex;
     console.log(esc_data[3]);
-  }
 }
- 
-function dec_val() {
-  if (esc_isinit == 1) {
-	if (esc_data[3][edit_item] > 0 )
-	{
-		esc_data[3][edit_item]--;
-	}
-    mkdisp();
-    console.log(esc_data[3]);
-  }
-}
- 
+    
 function save() {
   if (esc_isinit == 1) {
-	document.getElementById("txti").value = "Saving to ESC";
-    document.getElementById("txtv").value = "-------";
     sendMessage(JSON.stringify({"save": esc_data[3]}));
-    console.log("Saving data:");
+    document.getElementById("info").value = "Saving Data...";
+    console.log("Saving Data");
     console.log(esc_data[3]);
   }
 }
@@ -106,10 +129,8 @@ function save() {
 function reset() {
   if (esc_isinit == 1) {
 	esc_data[3] = Array.from(esc_data[4]);
-    document.getElementById("nri").value = edit_item + 1;
-    document.getElementById("nrv").value = esc_data[3][edit_item] + 1;
-    document.getElementById("txti").value = "Values Resetted";
-    document.getElementById("txtv").value = "Press Save to write to ESC";
+	mkdisp();
+	document.getElementById("info").value = "Reset to Defaults";
     console.log(esc_data[3]);
   }
 }
@@ -117,10 +138,8 @@ function reset() {
 function got_answer(data) {
   var ans = JSON.parse(data);
   if ("saved" in ans) {
-    if (ans["saved"] == "ok") {
-      document.getElementById("txtv").value = "Done";
-    } else {
-      document.getElementById("txtv").value = "Error";
+    if (ans["saved"] != "ok") {
+      console.log(ans["saved"]);
     }
   }
   if ("init" in ans) {
@@ -131,11 +150,7 @@ function got_answer(data) {
       console.log(esc_data);
       console.log(esc_names);
       console.log(esc_dict);
-      edit_item = 0;
-      document.getElementById("nri").value = edit_item + 1;
-      document.getElementById("nrv").value = esc_data[3][edit_item] + 1;
-      document.getElementById("txti").value = "Choose ESC from List";
-      document.getElementById("txtv").value = "Unknown ESC";
+      mkdisp()
   } 
   if ("info" in ans) {
       document.getElementById("info").value = ans["info"];
