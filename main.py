@@ -1,7 +1,8 @@
 import time
 import ujson
 import config
-from esc_com import get_init_data, write_parameter
+from machine import Pin
+from uniesc import get_init_data, write_parameter, read_gpio
 from esc_text import get_escnamelist, get_esctabledict, test_esctabledict
 from wificon import get_wlan_status, scan4ap, get_known_stations, save_profile, del_profile
 from microdot_asyncio import Microdot, Response, send_file
@@ -69,17 +70,23 @@ async def esc(request, ws):
         elif "init" in ujdata:
             init_data = []
             if ujdata["init"] == "???":
-                if escdata[0] == 1: # only if valid
+                if escdata[0] == 1: # valid
                     init_data.append(escdata)
                     init_data.append(escnames)
                     init_data.append(esctabledict)
                     await ws.send(ujson.dumps({"init": init_data}))
                     info = "Init from " + str(config.SERIAL) + " OK"
+                elif escdata[0] == 2: # simulated
+                    init_data.append(escdata)
+                    init_data.append(escnames)
+                    init_data.append(esctabledict)
+                    await ws.send(ujson.dumps({"init": init_data}))
+                    info = "Init from " + str(config.SERIAL) + " Simulated"
                 else:
-                    info = "Init from " + str(config.SERIAL) + " FAILED"
+                    info = "Init from " + str(config.SERIAL) + " Failed"
                 await ws.send(ujson.dumps({"info": info}))
             else:
-                await ws.send(ujson.dumps({"info": "Init Request FAILED"}))
+                await ws.send(ujson.dumps({"info": "Init Request Failed"}))
         else:
             await ws.send(ujson.dumps({"info": "Unknown Command"}))
 
@@ -105,7 +112,7 @@ async def sys(request, ws):
         elif "wif" in ujdata:
             # try connect and save to wifi.dat
             if ujdata["wif"] == "scan":
-                await ws.send(ujson.dumps({"wif": "scan start", "info": "Scan running"}))
+                await ws.send(ujson.dumps({"wif": "scan start", "info": "Scan Running"}))
                 scanssids = scan4ap()
                 savedssids = list(get_known_stations().keys())
                 apssid = config.APSSID
@@ -130,26 +137,51 @@ async def sys(request, ws):
                 while len(ssids):
                     ssid = str(ssids.pop(0))
                     await ws.send(ujson.dumps({"sid": ssid}))
-                    time.sleep(0.003)
-                await ws.send(ujson.dumps({"wif": "scan stop", "info": "Scan finished"}))
+                    time.sleep_ms(3)
+                await ws.send(ujson.dumps({"wif": "scan stop", "info": "Scan Finished"}))
             elif ujdata["wif"] == "remove":
                 if "ssid" and "pw" in ujdata:
                     # remove from wifi.dat
                     selssid = ujdata["ssid"]
                     if del_profile(selssid):
-                        info = str(selssid) + " removed from list"
+                        info = str(selssid) + " removed from List"
                     else:
-                        info = str(selssid) + " remove failed"
+                        info = str(selssid) + " remove Failed"
                     await ws.send(ujson.dumps({"info": info}))
             elif ujdata["wif"] == "save":
                 if "ssid" and "pw" in ujdata:
                     selssid = ujdata["ssid"]
                     pw = ujdata["pw"]
                     save_profile(selssid, pw)
-                    info = str(selssid) + " saved to file"
+                    info = str(selssid) + " saved to File"
                     await ws.send(ujson.dumps({"info": info}))
             else:
                 await ws.send(ujson.dumps({"info": "wif:???"}))
+        elif "analyze" in ujdata:
+            if ujdata["analyze"] == "run":
+                if Pin("WL_GPIO2", Pin.IN).value() == 1:
+                    await ws.send(ujson.dumps({"info": "Running COM Analyzer"}))
+                    print("")
+                    print("COM-Edge Analyzer Started")
+                    print("{")
+                    while True:
+                        try:
+                            read_gpio()
+                        except KeyboardInterrupt:
+                            await ws.send(ujson.dumps({"info": "Break COM Analyzer"}))
+                        try:
+                            time.sleep_ms(3000)
+                            await ws.send(ujson.dumps({"info": "Restarting COM Analyzer"}))
+                        except KeyboardInterrupt:
+                            break
+                    print("}")
+                    print("COM-Edge Analyzer Stopped")
+                    print("")
+                    await ws.send(ujson.dumps({"info": "COM Analyzer Stopped"}))
+                else:
+                    await ws.send(ujson.dumps({"info": "Connect to USB first"}))
+            else:
+                await ws.send(ujson.dumps({"info": "analyze:???"}))       
         elif "ota" in ujdata:
             if ujdata["ota"] == "update":
                 stat = get_wlan_status()
@@ -158,10 +190,10 @@ async def sys(request, ws):
                     f.write("run update")
                     f.close()
                     await ws.send(ujson.dumps({"info": "Running Update"}))
-                    time.sleep(3)
+                    time.sleep_ms(3000)
                     machine.reset()
                 else:
-                    await ws.send(ujson.dumps({"info": "No Internet connection"}))
+                    await ws.send(ujson.dumps({"info": "No Internet Connection"}))
             else:
                 await ws.send(ujson.dumps({"info": "ota:???"}))
         else:

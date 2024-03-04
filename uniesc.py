@@ -1,12 +1,9 @@
 from machine import Pin
 from time import sleep_us, ticks_us, ticks_diff, ticks_add
 
-# rx        GP13   		Pin_17 
-# tx        GP14   		Pin_19
-# usb power WL_GPIO2   	intern
-txgpio = Pin("GP14", Pin.OUT, value=0)
+# gpio
+txgpio = Pin("GP12", Pin.OUT, value=0)
 rxgpio = Pin("GP13", Pin.IN, Pin.PULL_UP)
-usbpwr = Pin("WL_GPIO2", Pin.IN)
 
 init_ok = 0
 items = 0
@@ -14,12 +11,7 @@ options_per_item = [0] * 15
 read_values = [0] * 15
 reset_values = [0] * 15
 ack = 0
-
-
-def get_init_data():
-    global init_ok, items, options_per_item, read_values, reset_values, ack
-    return [init_ok, items, options_per_item, read_values, reset_values, ack]
-
+ 
 
 def set_init_data(status, data):
     global init_ok, items, options_per_item, read_values, reset_values, ack
@@ -33,13 +25,13 @@ def set_init_data(status, data):
 
 def read_gpio():
     lastval = rxgpio.value()
-    print("start " + str(lastval))
+    print(str(ticks_us()) + ";" + str(lastval))
     while True:
         actval = rxgpio.value()
         if lastval != actval:
             edgeticks = ticks_us()
             lastval = actval
-            print(str(edgeticks) + " " + str(actval))
+            print(str(edgeticks) + ";" + str(actval))
 
 
 def read_data():
@@ -95,38 +87,6 @@ def read_data():
     return rxbyte
 
 
-def write_data(data):
-    txgpio.value(1)
-    sleep_us(2000)
-    txgpio.value(0)
-    sleep_us(2000)
-    txgpio.value(1)
-    sleep_us(2000)
-    for x in range(0, 8):
-        if data & 0x01:
-            txgpio.value(0)
-        else:
-            txgpio.value(1)
-        data >>= 1
-        sleep_us(2000)
-    txgpio.value(0)
-    sleep_us(2000)
-
-
-def write_parameter(data):
-    for x in range(0, 15):
-        write_data(data[x])
-    write_data(85)  # write ack
-    sleep_us(100)
-    _ack = read_data()
-    if _ack == 85:
-        print("Set Parameter done")
-        return 0
-    else:
-        print("Set Parameter failed")
-        return -1
-        
-        
 def read_init():
     debug = 0
     init_data = [0] * 50
@@ -170,7 +130,39 @@ def read_init():
         print("Init failed")
         set_init_data(0, init_data)
         return -1
-    
+
+
+def write_data(data):
+    txgpio.value(1)
+    sleep_us(2000)
+    txgpio.value(0)
+    sleep_us(2000)
+    txgpio.value(1)
+    sleep_us(2000)
+    for x in range(0, 8):
+        if data & 0x01:
+            txgpio.value(0)
+        else:
+            txgpio.value(1)
+        data >>= 1
+        sleep_us(2000)
+    txgpio.value(0)
+    sleep_us(2000)
+
+
+def write_parameter(data):
+    for x in range(0, 15):
+        write_data(data[x])
+    write_data(85)  # write ack
+    sleep_us(100)
+    _ack = read_data()
+    if _ack == 85:
+        print("Set Parameter done")
+        return 0
+    else:
+        print("Set Parameter failed")
+        return -1
+         
     
 def gen_test_data(status):
         init_data = [0] * 50
@@ -188,15 +180,12 @@ def gen_test_data(status):
         set_init_data(_init_ok, init_data)
         
         
-def usb_init(): 
-    print("USB power")
-    # wait until rx is stable 1 for 100ms
-    x = 0
-    while x < 10000:
-        if rxgpio.value() == 1:
-            x = 0
-        else:
-            x += 1
-        sleep_us(10)
-    print("Boot/Reboot ESC now")
-    return 1   
+def get_init_data():
+    global init_ok, items, options_per_item, read_values, reset_values, ack
+    return [init_ok, items, options_per_item, read_values, reset_values, ack]
+
+
+def get_rxtx_gpio():
+    global rxgpio, txgpio
+    return rxgpio, txgpio
+

@@ -90,18 +90,15 @@ function fnbtnremove() {
   console.log("Button Remove");
 }
 
-function fnbtnota() {
-  sendMessage(JSON.stringify({"ota":"update"}));
-  console.log("Button Update");
+function fnbtnanalyz() {
+  sendMessage(JSON.stringify({"analyze": "run"}));
+  console.log("Button Analyzer");
 }
 
-function comboInit(ssidlist, ssid)
-{
-  ssid = document.getElementById(ssid);  
-  var idx = ssidlist.selectedIndex;
-  var content = ssidlist.options[idx].innerHTML;
-  if(ssid.value == "")
-    ssid.value = content;
+
+function fnbtnota() {
+  sendMessage(JSON.stringify({"ota": "update"}));
+  console.log("Button Update");
 }
 
 function combo(ssidlist, ssid)

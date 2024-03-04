@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="author" content="MS">
   <meta name="description" content="Universal ESC Programmer">
-  <title>UniESC</title>
+  <title>UniESC System</title>
   <link rel="stylesheet" href="static/system.css">
 </head>
 <body>
@@ -30,10 +30,15 @@
     
     <div id="space">	
 	</div>	
+	
+	<div id="bot">
+		<label class="label" for="analyz">ESC-COM Analyzer:</label>
+        <input type="button" value="Run Analyzer" onclick="fnbtnanalyz()" id="analyz" name="analyz"/>
+	</div>
 	    
 	<div id="bot">
 		<label class="label" for="update">Update Firmare:</label>
-        <input type="button" value="Update" onclick="fnbtnota()" id="update" name="update"/>
+        <input type="button" value="Run FW-Update" onclick="fnbtnota()" id="update" name="update"/>
 	</div>
 </div>
 <script src="static/system.js"></script>

@@ -1,41 +1,53 @@
 from machine import Pin
 from time import sleep_us
-from esc_com import read_init, gen_test_data
+from uniesc import read_init, gen_test_data
 
-# debug
-# from esc_com import read_gpio
-# read_gpio()
+# gpio
+usbpwr = Pin("WL_GPIO2", Pin.IN)
+escpwr = Pin("GP2", Pin.IN)
+onbled = Pin("LED", Pin.OUT, value=0)
+rdled = Pin("GP16", Pin.OUT, value=0)
+blled = Pin("GP17", Pin.OUT, value=0)
+sw = Pin("GP15", Pin.IN, Pin.PULL_UP)
 
-
-# usb power WL_GPIO2   	intern
-usbpwr = Pin("WL_GPIO2", Pin.IN).value()
-led = Pin("LED", Pin.OUT, value=1)
-
-if usbpwr == 0:
+usbpwrval = usbpwr.value()
+if usbpwrval == 0 and escpwr.value() == 1:
     while True:
-        led.on()
+        rdled.on()
         ret = read_init()
-        if ret == 0:
-            print("Init success")
+        if ret == 0:   
             for x in range(0, 5):
-                led.toggle()
+                rdled.toggle()
                 sleep_us(250*1000)
-            led.on()
+            print("Init success")
             break
         else:
             for x in range(0, 15):
-                led.toggle()
+                rdled.toggle()
                 sleep_us(100*1000)
-            led.on()
             print("Retry Init...\n")
 
 
 # import other needed stuff
 from machine import Timer
 from wificon import wifi_connect, get_wlan_status
-from esc_com import usb_init
 import os
 import ugit
+
+# blink timer
+def blink(red, blue):
+    if red:
+        rdled.toggle()
+    if blue:
+        blled.toggle()
+
+#switch
+def sw_irq_handler():
+    if sw.value() == 0:
+        raise KeyboardInterrupt
+ 
+timled = Timer()
+sw.irq(trigger=Pin.IRQ_FALLING, handler=sw_irq_handler())
 
 # check for updates
 update = 0
@@ -49,44 +61,46 @@ try:
 except OSError:  # open file failed -> no update go on
     pass
 
-# blink timer
-timled = Timer()
-
-if update == 0 and usbpwr == 1:
-    timled.init(freq=7, mode=Timer.PERIODIC, callback=lambda t:led.toggle())
-    if usb_init() == 1:
-        timled.deinit()
-        while True:
-            led.on()
-            try:
-                ret = read_init()
-            except KeyboardInterrupt:
-                gen_test_data(1)
-                print("")
-                print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
-                print("Skipping read_init()")          
-                print("Warning: Using invalid generated Testdata")
-                print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
-                print("")
-                ret = 0  
+if update == 0 and usbpwrval == 1:
+    timled.init(freq=5, mode=Timer.PERIODIC, callback=blink(True,False))
+    try:
+        while True:  
+            if escpwr.value() == 1:
+                print("Switch ESC off")
+                while escpwr.value() == 1:
+                    pass
+            print("Switch ESC on")
+            while escpwr.value() == 0:
+                pass
+            timled.deinit()
+            
+            rdled.on()
+            ret = read_init()
             if ret == 0:
-                print("Init success")
                 for x in range(0, 5):
-                    led.toggle()
+                    rdled.toggle()
                     sleep_us(250*1000)
-                led.on()
+                print("Init success")
                 break
             else:
                 for x in range(0, 15):
-                    led.toggle()
+                    rdled.toggle()
                     sleep_us(100*1000)
-                led.on()
                 print("Retry Init...\n")
-    else:
-        timled.deinit()  
-
- 
+    except KeyboardInterrupt:
+        gen_test_data(2)
+        print("")
+        print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+        print("Skipping read_init()")          
+        print("Warning: Using generated Testdata")
+        print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+        print("")
+        timled.deinit()
+    
+    
 # make network connection
+blled.on()
+rdled.on()
 wifi_connect()
 wstat = get_wlan_status()
 if wstat[0] == "STA":
@@ -94,16 +108,16 @@ if wstat[0] == "STA":
     if update == 1:
         chk = ugit.check_update_version() 
         if chk is True:   # if version differs
-            timled.init(freq=5, mode=Timer.PERIODIC, callback=lambda t:led.toggle())
+            blled.on()
+            rdled.off()
+            timled.init(freq=2, mode=Timer.PERIODIC, callback=blink(True,True))
             print("Running update now...")
             ugit.pull_all(isconnected=True,reboot=True)
             while True:
                 pass
-
-    blinkfreq = 1
+    timled.init(freq=1, mode=Timer.PERIODIC, callback=blink(False,True))
 elif wstat[0] == "AP":
-    blinkfreq = 2
+    timled.init(freq=3, mode=Timer.PERIODIC, callback=blink(False,True))
 else:
-    blinkfreq = 13 
-
-timled.init(freq=blinkfreq, mode=Timer.PERIODIC, callback=lambda t:led.toggle())
+    blled.off()
+    timled.init(freq=13, mode=Timer.PERIODIC, callback=blink(True,False))

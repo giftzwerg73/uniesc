@@ -1,5 +1,5 @@
 # gerneral branding
-HWREF = "0.3"
+HWREF = "1.0"
 SERIAL = "000001"
 # wifi stuff
 APSSID = "escAP" + SERIAL[2:6]
