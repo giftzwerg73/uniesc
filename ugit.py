@@ -26,7 +26,7 @@ password = ''
 # CHANGE TO YOUR REPOSITORY INFO
 # Repository must be public if no personal access token is supplied
 user = 'giftzwerg73'
-repository = 'escprog'
+repository = 'uniesc'
 token = ''
 # Change this variable to 'master' or any other name matching your default branch
 default_branch = 'main'

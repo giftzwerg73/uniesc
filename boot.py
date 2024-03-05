@@ -4,14 +4,15 @@ from uniesc import read_init, gen_test_data
 
 # gpio
 usbpwr = Pin("WL_GPIO2", Pin.IN)
-escpwr = Pin("GP2", Pin.IN)
+escpwr = Pin("GP2", Pin.IN, Pin.PULL_UP)
 onbled = Pin("LED", Pin.OUT, value=0)
 rdled = Pin("GP16", Pin.OUT, value=0)
 blled = Pin("GP17", Pin.OUT, value=0)
 sw = Pin("GP15", Pin.IN, Pin.PULL_UP)
 
 usbpwrval = usbpwr.value()
-if usbpwrval == 0 and escpwr.value() == 1:
+swval = sw.value()
+if usbpwrval == 0 and escpwr.value() == 1 and swval == 1:
     while True:
         rdled.on()
         ret = read_init()
@@ -35,19 +36,33 @@ import os
 import ugit
 
 # blink timer
-def blink(red, blue):
-    if red:
-        rdled.toggle()
-    if blue:
-        blled.toggle()
-
-#switch
-def sw_irq_handler():
-    if sw.value() == 0:
-        raise KeyboardInterrupt
- 
 timled = Timer()
-sw.irq(trigger=Pin.IRQ_FALLING, handler=sw_irq_handler())
+blinkled = 1
+def blink(t):
+    global blinkled
+    if blinkled == 1:
+        rdled.toggle()
+    elif blinkled == 2:
+         blled.toggle()
+    elif blinkled == 3:
+        rdled.toggle()
+        blled.toggle()
+    elif blinkled == 4:
+        onbled.toggle()
+    else:
+        rdled.toggle()
+        blled.toggle()
+        onbled.toggle()
+        
+#switch
+# swevent = 0
+# def sw_irq_handler(t):
+    # global swevent
+    # if sw.value() == 0:
+        # swevent += 1
+ 
+# sw.irq(trigger=Pin.IRQ_FALLING, handler=sw_irq_handler)
+
 
 # check for updates
 update = 0
@@ -61,8 +76,9 @@ try:
 except OSError:  # open file failed -> no update go on
     pass
 
-if update == 0 and usbpwrval == 1:
-    timled.init(freq=5, mode=Timer.PERIODIC, callback=blink(True,False))
+if update == 0 and usbpwrval == 1 and swval == 1:
+    blinkled = 1
+    timled.init(freq=5, mode=Timer.PERIODIC, callback=blink)
     try:
         while True:  
             if escpwr.value() == 1:
@@ -110,14 +126,18 @@ if wstat[0] == "STA":
         if chk is True:   # if version differs
             blled.on()
             rdled.off()
-            timled.init(freq=2, mode=Timer.PERIODIC, callback=blink(True,True))
+            blinkled = 3
+            timled.init(freq=2, mode=Timer.PERIODIC, callback=blink)
             print("Running update now...")
             ugit.pull_all(isconnected=True,reboot=True)
             while True:
                 pass
-    timled.init(freq=1, mode=Timer.PERIODIC, callback=blink(False,True))
+    blinkled = 2
+    timled.init(freq=1, mode=Timer.PERIODIC, callback=blink)
 elif wstat[0] == "AP":
-    timled.init(freq=3, mode=Timer.PERIODIC, callback=blink(False,True))
+    blinkled = 2
+    timled.init(freq=3, mode=Timer.PERIODIC, callback=blink)
 else:
     blled.off()
-    timled.init(freq=13, mode=Timer.PERIODIC, callback=blink(True,False))
+    blinkled = 1
+    timled.init(freq=13, mode=Timer.PERIODIC, callback=blink)
