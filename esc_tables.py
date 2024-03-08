@@ -136,21 +136,35 @@ class TM_WP8BL150_Module:
 
 
 # ***** tables for team orion esc *****
-class TO_BRAINZ8_Module:
+class TO_VORTEX_R8_Module:
     def __init__(self):
-        self.ESCName = "Team Orion BRAINZ8 BLS120A"
+        self.ESCName = "Team Orion VORTEX R8"
         self.ItemName = ["Running Mode",
                          "Drag Brake Force",
                          "Low Voltage Cut-Off",
                          "Start Mode (Punch)",
-                         "Max Brake Force"]
-        self.ItemValue = [["Forward with Brake", "Forward/Reverse with Brake", "Forward and Reverse"],
+                         "Max Brake Force",
+                         "Max Reverse Force",
+                         "Initial Brake Force",
+                         "Neutral Range",
+                         "Timing",
+                         "Over-heat Protection",
+                         "Motor Rotation",
+                         "Lipo Cells"]
+        self.ItemValue = [["Forward with Brake", "Forward/Reverse with Brake", "Forward/Reverse"],
                           ["0%", "5%", "10%", "20%", "40%", "60%", "80%", "100%"],
                           ["Non-Protection", "2.6V/Cell", "2.8V/Cell", "3.0V/Cell", "3.2V/Cell", "3.4V/Cell"],
-                          ["Level1", "Level2", "Level3", "Level4", "Level5", "Level6", "Level7", "Level8", "Level9"],
-                          ["25%", "50%", "75%", "100%", "Disable"]]
+                          ["Level 1", "Level 2", "Level 3", "Level 4", "Level 5", "Level 6", "Level 7", "Level 8", "Level 9"],
+                          ["25%", "50%", "75%", "100%", "Disable"],
+                          ["25%", "50%", "75%", "100%"],
+                          ["= Drag Brake Force", "0%", "20%", "40%"],
+                          ["6% (Narrow)", "9% (Normal)", "12% (Wide)"],
+                          ["0.00 °", "3.75 °", "7.50 °", "11.25 °", "15.00 °", "18.75 °", "22.50°", "26.25°"],
+                          ["Enable", "Disable"],
+                          ["Counter Clockwise", "Clockwise"],
+                          ["Auto Calculate", "2 Cells", "3 Cells", "4 Cells"]]
 
-        self.EscAuthor = "Author: MS, 03.10.2023"
+        self.EscAuthor = "Author: MS, 06.03.2024"
         self.ItemNr = len(self.ItemName)
         self.ValNr = []
         for x in range(0, self.ItemNr):
@@ -188,8 +202,8 @@ esclist.append(HW_MAX10_SCT_MODULE())
 # team magic esc
 esclist.append(TM_WP8BL100_Module())
 esclist.append(TM_WP8BL150_Module())
-# kosho esc
-esclist.append(TO_BRAINZ8_Module())
+# team orion esc
+esclist.append(TO_VORTEX_R8_Module())
 # arrma esc
 esclist.append(ARRMA_BLX185_Module())
 

@@ -74,19 +74,20 @@ def get_sta_con(): # return a working WLAN(STA_IF) instance or None
         return wlan_sta
 
 
-def run_ap():
+def run_ap(useprofiles):
     # deactivate ap
     wlan_ap.active(False)
     while wlan_ap.active() == True:
         pass
-    profiles = read_profiles()
-    if ap_ssid in profiles:
-        ap_password = profiles[ap_ssid]
-        wlan_ap.config(essid=ap_ssid, password=ap_password, hostname=hostnm)
+    if useprofiles != 0:
+        profiles = read_profiles()
+        if ap_ssid in profiles:
+            ap_password = profiles[ap_ssid]
     else:
-        # default ap config
-        wlan_ap.config(essid="escAP666", password="escAP666", hostname="escAP666")  
-    
+        ap_ssid = "escAP666"
+        ap_password = "escAP666"
+        hostnm = "escAP666"
+    wlan_ap.config(essid=ap_ssid, password=ap_password, hostname=hostnm)
     # activate ap
     wlan_ap.active(True)
     while wlan_ap.active() == False:
@@ -175,23 +176,27 @@ def get_known_stations():
 
 
 # call function in main
-def wifi_connect():
-    print("Hostname " + hostnm)
-    print("AP SSID  " + ap_ssid)
-    print("AP IP    " + IP)
-    print("AP GW    " + GATEWAY)
-    print("SUB      " + SUBNET)
-    print("DNS      " + DNS)
-    # try to connect to station
-    wlan_sta = get_sta_con()
-    if wlan_sta != None:
-        # connected to station
-        print(wlan_sta)
-        print("Connected. Network config: ", wlan_sta.ifconfig())
-        set_wlan_status(["STA", wlan_sta])
-    else: # open ap
-        wlan_ap = run_ap()
+def wifi_connect(em):
+    if em == 0: # hard coded ap config 
+        wlan_ap = run_ap(0)
         print(wlan_ap)
-        print("AP up. Network config: ", wlan_ap.ifconfig())
-        set_wlan_status(["AP", wlan_ap])
+        print(wlan_ap.config("essid"))
+        print("APEM up. Network config: ", wlan_ap.ifconfig())
+        set_wlan_status(["APEM", wlan_ap])
+    else:    
+        # try to connect to station
+        wlan_sta = get_sta_con()
+        if wlan_sta != None:
+            # connected to station
+            print(wlan_sta)
+            print(wlan_sta.config("essid"))
+            print("Connected. Network config: ", wlan_sta.ifconfig())
+            set_wlan_status(["STA", wlan_sta])
+        else: # open ap
+            wlan_ap = run_ap(1)
+            print(wlan_ap)
+            print(wlan_ap.config("essid")) 
+            print("AP up. Network config: ", wlan_ap.ifconfig())
+            set_wlan_status(["AP", wlan_ap])
+    
     

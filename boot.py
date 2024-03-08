@@ -12,21 +12,22 @@ sw = Pin("GP15", Pin.IN, Pin.PULL_UP)
 
 usbpwrval = usbpwr.value()
 swval = sw.value()
-if usbpwrval == 0 and escpwr.value() == 1 and swval == 1:
-    while True:
-        rdled.on()
-        ret = read_init()
-        if ret == 0:   
-            for x in range(0, 5):
-                rdled.toggle()
-                sleep_us(250*1000)
-            print("Init success")
-            break
-        else:
-            for x in range(0, 15):
-                rdled.toggle()
-                sleep_us(100*1000)
-            print("Retry Init...\n")
+if swval == 1:
+    if usbpwrval == 0 and escpwr.value() == 1:
+        while True:
+            rdled.on()
+            ret = read_init()
+            if ret == 0:   
+                for x in range(0, 5):
+                    rdled.toggle()
+                    sleep_us(250*1000)
+                print("Init success")
+                break
+            else:
+                for x in range(0, 15):
+                    rdled.toggle()
+                    sleep_us(100*1000)
+                print("Retry Init...\n")
 
 
 # import other needed stuff
@@ -54,70 +55,60 @@ def blink(t):
         blled.toggle()
         onbled.toggle()
         
-#switch
-# swevent = 0
-# def sw_irq_handler(t):
-    # global swevent
-    # if sw.value() == 0:
-        # swevent += 1
- 
-# sw.irq(trigger=Pin.IRQ_FALLING, handler=sw_irq_handler)
-
-
-# check for updates
 update = 0
-try:
-    f = open('update.dat', 'r')
-    upf = f.read()
-    f.close()
-    os.remove('update.dat')
-    if upf is "run update":
-        update = 1
-except OSError:  # open file failed -> no update go on
-    pass
+if swval == 1:
+    try: # check for updates
+        f = open('update.dat', 'r')
+        upf = f.read()
+        f.close()
+        os.remove('update.dat')
+        if upf is "run update":
+            update = 1
+    except OSError:  # open file failed -> no update go on
+        pass
 
-if update == 0 and usbpwrval == 1 and swval == 1:
-    blinkled = 1
-    timled.init(freq=5, mode=Timer.PERIODIC, callback=blink)
-    try:
-        while True:  
-            if escpwr.value() == 1:
-                print("Switch ESC off")
-                while escpwr.value() == 1:
+    if update == 0 and usbpwrval == 1:
+        blinkled = 1
+        timled.init(freq=5, mode=Timer.PERIODIC, callback=blink)
+        try:
+            while True:  
+                if escpwr.value() == 1:
+                    print("Switch ESC off")
+                    while escpwr.value() == 1:
+                        pass
+                print("Switch ESC on")
+                while escpwr.value() == 0:
                     pass
-            print("Switch ESC on")
-            while escpwr.value() == 0:
-                pass
-            timled.deinit()
+                timled.deinit()
             
-            rdled.on()
-            ret = read_init()
-            if ret == 0:
-                for x in range(0, 5):
-                    rdled.toggle()
-                    sleep_us(250*1000)
-                print("Init success")
-                break
-            else:
-                for x in range(0, 15):
-                    rdled.toggle()
-                    sleep_us(100*1000)
-                print("Retry Init...\n")
-    except KeyboardInterrupt:
-        gen_test_data(2)
-        print("")
-        print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
-        print("Skipping read_init()")          
-        print("Warning: Using generated Testdata")
-        print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
-        print("")
-        timled.deinit()
+                rdled.on()
+                ret = read_init()
+                if ret == 0:
+                    for x in range(0, 5):
+                        rdled.toggle()
+                        sleep_us(250*1000)
+                    print("Init success")
+                    break
+                else:
+                    for x in range(0, 15):
+                        rdled.toggle()
+                        sleep_us(100*1000)
+                    print("Retry Init...\n")
+        except KeyboardInterrupt:
+            gen_test_data(2)
+            print("")
+            print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+            print("Skipping read_init()")          
+            print("Warning: Using generated Testdata")
+            print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+            print("")
+            timled.deinit()
     
     
 # make network connection
 blled.on()
 rdled.on()
-wifi_connect()
+wifi_connect(swval)
 wstat = get_wlan_status()
 if wstat[0] == "STA":
     # check update
@@ -127,7 +118,7 @@ if wstat[0] == "STA":
             blled.on()
             rdled.off()
             blinkled = 3
-            timled.init(freq=2, mode=Timer.PERIODIC, callback=blink)
+            timled.init(freq=1, mode=Timer.PERIODIC, callback=blink)
             print("Running update now...")
             ugit.pull_all(isconnected=True,reboot=True)
             while True:
@@ -136,6 +127,11 @@ if wstat[0] == "STA":
     timled.init(freq=1, mode=Timer.PERIODIC, callback=blink)
 elif wstat[0] == "AP":
     blinkled = 2
+    timled.init(freq=3, mode=Timer.PERIODIC, callback=blink)
+elif wstat[0] == "APEM":
+    blled.off()
+    rdled.off()
+    blinkled = 3
     timled.init(freq=3, mode=Timer.PERIODIC, callback=blink)
 else:
     blled.off()
