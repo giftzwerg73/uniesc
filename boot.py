@@ -6,28 +6,27 @@ from uniesc import read_init, gen_test_data
 usbpwr = Pin("WL_GPIO2", Pin.IN)
 escpwr = Pin("GP2", Pin.IN, Pin.PULL_UP)
 onbled = Pin("LED", Pin.OUT, value=0)
-rdled = Pin("GP16", Pin.OUT, value=0)
-blled = Pin("GP17", Pin.OUT, value=0)
+rdled = Pin("GP17", Pin.OUT, value=0)
+blled = Pin("GP16", Pin.OUT, value=0)
 sw = Pin("GP15", Pin.IN, Pin.PULL_UP)
 
 usbpwrval = usbpwr.value()
 swval = sw.value()
-if swval == 1:
-    if usbpwrval == 0 and escpwr.value() == 1:
-        while True:
-            rdled.on()
-            ret = read_init()
-            if ret == 0:   
-                for x in range(0, 5):
-                    rdled.toggle()
-                    sleep_us(250*1000)
-                print("Init success")
-                break
-            else:
-                for x in range(0, 15):
-                    rdled.toggle()
-                    sleep_us(100*1000)
-                print("Retry Init...\n")
+if swval == 1 and usbpwrval == 0 and escpwr.value() == 1:
+    while True:
+        rdled.on()
+        ret = read_init()
+        if ret == 0:   
+            for x in range(0, 5):
+                rdled.toggle()
+                sleep_us(250*1000)
+            print("Init success")
+            break
+        else:
+            for x in range(0, 15):
+                rdled.toggle()
+                sleep_us(100*1000)
+            print("Retry Init...\n")
 
 
 # import other needed stuff
