@@ -74,10 +74,10 @@ if swval == 1:
                 if escpwr.value() == 1:
                     print("Switch ESC off")
                     while escpwr.value() == 1:
-                        pass
+                        sleep_us(3*1000)
                 print("Switch ESC on")
                 while escpwr.value() == 0:
-                    pass
+                    sleep_us(3*1000)
                 timled.deinit()
             
                 rdled.on()
