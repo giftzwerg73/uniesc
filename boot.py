@@ -5,7 +5,7 @@ from uniesc import read_init, gen_test_data
 # gpio
 usbpwr = Pin("WL_GPIO2", Pin.IN)
 escpwr = Pin("GP2", Pin.IN, Pin.PULL_UP)
-onbled = Pin("LED", Pin.OUT, value=0)
+onbled = Pin("LED", Pin.OUT, value=1)
 rdled = Pin("GP17", Pin.OUT, value=0)
 blled = Pin("GP16", Pin.OUT, value=0)
 sw = Pin("GP15", Pin.IN, Pin.PULL_UP)
@@ -52,7 +52,6 @@ def blink(t):
         blled.toggle()
         onbled.toggle()
         
-
 if sw_atboot == 1 and usbpwrval == 1:
     testmode = False
     while True:
@@ -105,6 +104,7 @@ if sw_atboot == 1 and usbpwrval == 1:
 # make network connection
 blled.on()
 rdled.on()
+onbled.on()
 wifi_connect(sw_atboot)
 wstat = get_wlan_status()
 if wstat[0] == "STA":
