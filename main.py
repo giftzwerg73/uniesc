@@ -1,13 +1,166 @@
 import time
-import ujson
 import config
-from machine import Pin
-from uniesc import get_init_data, write_parameter, read_gpio
-from esc_text import get_escnamelist, get_esctabledict, test_esctabledict
-from wificon import get_wlan_status, scan4ap, get_known_stations, save_profile, del_profile
+import os
+import ugit
+import gc
+from machine import Pin, Timer
+from uniesc import read_init, gen_test_data
+from wificon import wifi_connect, get_wlan_status, scan4ap, get_known_stations, save_profile, del_profile
+
+
+# blink timer
+timled = Timer()
+blinkled = 1
+def blink(t):
+    global blinkled
+    if blinkled == 1:
+        rdled.toggle()
+    elif blinkled == 2:
+        blled.toggle()
+    elif blinkled == 3:
+        rdled.toggle()
+        blled.toggle()
+    elif blinkled == 4:
+        onbled.toggle()
+    else:
+        rdled.toggle()
+        blled.toggle()
+        onbled.toggle()
+
+def wait_sw_released():
+    global blinkled
+    bl = blled.value()
+    rd = rdled.value()
+    gr = onbled.value()
+    blled.on()
+    rdled.off()
+    onbled.on()
+    blinkled = 5
+    timled.init(freq=7, mode=Timer.PERIODIC, callback=blink)
+    while sw.value() == 0:
+        sleep_ms(3)
+    timled.deinit()
+    blled.value(bl)
+    rdled.value(rd)
+    onbled.value(gr)
+
+update = 0
+skip_force_apem = 1
+if sw_atboot == 0: # switch at boot
+    skip_force_apem = 0
+    try: # check for updates
+        f = open('update.dat', 'r')
+        upf = f.read()
+        f.close()
+        os.remove('update.dat')
+        if upf is "run update":
+            update = 1
+            skip_force_apem = 1
+    except OSError:  # open file failed -> no update go on
+       pass
+    wait_sw_released()
+   
+if update == 0 and usbpwr_atboot == 1: # no update and power from usb
+    testmode = False
+    while True:
+        blled.off()
+        rdled.off()
+        onbled.off()
+        blinkled = 1
+        timled.init(freq=5, mode=Timer.PERIODIC, callback=blink)
+        if escpwr.value() == 1:
+            print("Switch ESC off")
+            while escpwr.value() == 1:
+                sleep_ms(3)                       
+        print("Switch ESC on or press button for test mode")
+        while escpwr.value() == 0:
+            sleep_ms(3)
+            if sw.value() == 0:
+                timled.deinit()
+                wait_sw_released() 
+                testmode = True
+                break      
+        if testmode == False:
+            timled.deinit()
+            blled.off()
+            rdled.off()
+            onbled.off()
+            rdled.on()
+            ret = read_init()
+            if ret == 0:
+                for x in range(0, 5):
+                    rdled.toggle()
+                    sleep_ms(250)
+                print("Init success")
+                break
+            else:
+                for x in range(0, 15):
+                    rdled.toggle()
+                    sleep_ms(100)
+                print("Retry Init...\n")  
+        else:
+            gen_test_data(2)
+            print("")
+            print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+            print("Skipping read_init()")          
+            print("Warning: Using generated Testdata")
+            print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+            print("")
+            break
+
+# make network connection
+blled.on()
+rdled.on()
+onbled.on()
+wifi_connect(skip_force_apem)
+wstat = get_wlan_status()
+if wstat[0] == "STA":
+    if update == 0:
+        blled.off()
+        rdled.off()
+        blinkled = 2
+        timled.init(freq=1, mode=Timer.PERIODIC, callback=blink)
+    else:
+        gc.collect()
+        chk = ugit.check_update_version() 
+        if chk is True:   # if version differs
+            for x in range(0, 9):
+                blled.off()
+                rdled.off()
+                onbled.off()
+                sleep_ms(450)
+                blled.on()
+                rdled.on()
+                onbled.on()
+                sleep_ms(50)
+            print("Running update now...")
+            ugit.pull_all(isconnected=True,reboot=True)
+            while True:
+                pass    
+elif wstat[0] == "AP":
+    blled.off()
+    rdled.off()
+    blinkled = 2
+    timled.init(freq=3, mode=Timer.PERIODIC, callback=blink)
+elif wstat[0] == "APEM":
+    blled.off()
+    rdled.on()
+    blinkled = 3
+    timled.init(freq=3, mode=Timer.PERIODIC, callback=blink)
+else:
+    blled.off()
+    rdled.off()
+    blinkled = 1
+    timled.init(freq=13, mode=Timer.PERIODIC, callback=blink)
+    
+
+#now import other stuff
+import ujson
 from microdot_asyncio import Microdot, Response, send_file
 from microdot_utemplate import render_template
 from microdot_asyncio_websocket import with_websocket
+from uniesc import get_init_data, write_parameter, read_gpio
+from esc_text import get_escnamelist, get_esctabledict, test_esctabledict
 
 escdata = get_init_data()
 escnames = get_escnamelist()
