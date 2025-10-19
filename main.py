@@ -59,6 +59,12 @@ if sw_atboot == 0: # switch at boot
     except OSError:  # open file failed -> no update go on
        pass
     wait_sw_released()
+else:
+    try:
+        os.remove('update.dat')
+    except OSError:  # remove file failed -> go on
+       pass  
+    
    
 if update == 0 and usbpwr_atboot == 1: # no update and power from usb
     testmode = False
