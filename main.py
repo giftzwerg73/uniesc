@@ -339,12 +339,15 @@ async def sys(request, ws):
             if ujdata["ota"] == "update":
                 stat = get_wlan_status()
                 if stat[0] == "STA":
-                    f = open("update.dat", "w")
-                    f.write("run update")
-                    f.close()
-                    await ws.send(ujson.dumps({"info": "Running Update"}))
-                    time.sleep_ms(3000)
-                    machine.reset()
+                    if sw.value() == 0:
+                        f = open("update.dat", "w")
+                        f.write("run update")
+                        f.close()
+                        await ws.send(ujson.dumps({"info": "Starting Update"}))
+                        time.sleep_ms(1000)
+                        machine.reset()
+                    else:
+                        await ws.send(ujson.dumps({"info": "Hold down Button before starting Update"}))
                 else:
                     await ws.send(ujson.dumps({"info": "No Internet Connection"}))
             else:
