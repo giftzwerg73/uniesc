@@ -63,8 +63,8 @@ else:
     try:
        os.remove('update.dat')
     except OSError:  # remove file failed -> go on
-       pass  
-    
+       pass
+
 if update == 0 and usbpwr_atboot == 1: # no update and power from usb
     testmode = False
     while True:
