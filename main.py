@@ -65,7 +65,6 @@ else:
     except OSError:  # remove file failed -> go on
        pass  
     
-   
 if update == 0 and usbpwr_atboot == 1: # no update and power from usb
     testmode = False
     while True:
