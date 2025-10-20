@@ -61,14 +61,14 @@ if sw_atboot == 0: # switch at boot
     wait_sw_released()
 else:
     try:
-        os.remove('update.dat')
+       os.remove('update.dat')
     except OSError:  # remove file failed -> go on
        pass  
     
 if update == 0 and usbpwr_atboot == 1: # no update and power from usb
     testmode = False
     while True:
-        blled.off()
+        blled.off()   
         rdled.off()
         onbled.off()
         blinkled = 1
@@ -139,7 +139,7 @@ if wstat[0] == "STA":
                 onbled.on()
                 sleep_ms(50)
             print("Running update now...")
-            ugit.pull_all(isconnected=True,reboot=True)
+            ugit.pull_all(isconnected=True)
             while True:
                 pass    
 elif wstat[0] == "AP":
