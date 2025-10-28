@@ -413,8 +413,7 @@ class Request():
             raise RuntimeError('Cannot use both stream and body')
         if self._body is None:
             self._body = b''
-            if self.content_length and \
-                    self.content_length <= Request.max_body_length:
+            if self.content_length and self.content_length <= Request.max_body_length:
                 while len(self._body) < self.content_length:
                     data = self._stream.read(
                         self.content_length - len(self._body))
@@ -580,8 +579,7 @@ class Response():
             self.headers['Set-Cookie'] = [http_cookie]
 
     def complete(self):
-        if isinstance(self.body, bytes) and \
-                'Content-Length' not in self.headers:
+        if isinstance(self.body, bytes) and 'Content-Length' not in self.headers:
             self.headers['Content-Length'] = str(len(self.body))
         if 'Content-Type' not in self.headers:
             self.headers['Content-Type'] = self.default_content_type
@@ -592,8 +590,7 @@ class Response():
         self.complete()
 
         # status code
-        reason = self.reason if self.reason is not None else \
-            ('OK' if self.status_code == 200 else 'N/A')
+        reason = self.reason if self.reason is not None else ('OK' if self.status_code == 200 else 'N/A')
         stream.write('HTTP/1.0 {status_code} {reason}\r\n'.format(
             status_code=self.status_code, reason=reason).encode())
 

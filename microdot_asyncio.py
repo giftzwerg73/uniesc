@@ -137,8 +137,7 @@ class Response(BaseResponse):
 
         try:
             # status code
-            reason = self.reason if self.reason is not None else \
-                ('OK' if self.status_code == 200 else 'N/A')
+            reason = self.reason if self.reason is not None else ('OK' if self.status_code == 200 else 'N/A')
             await stream.awrite('HTTP/1.0 {status_code} {reason}\r\n'.format(
                 status_code=self.status_code, reason=reason).encode())
 
@@ -156,8 +155,7 @@ class Response(BaseResponse):
                     body = body.encode()
                 await stream.awrite(body)
         except OSError as exc:  # pragma: no cover
-            if exc.errno in MUTED_SOCKET_ERRORS or \
-                    exc.args[0] == 'Connection lost':
+            if exc.errno in MUTED_SOCKET_ERRORS or exc.args[0] == 'Connection lost':
                 pass
             else:
                 raise

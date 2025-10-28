@@ -1,12 +1,12 @@
-import time
 import config
 import os
 import ugit
 import gc
+from time import sleep_ms
 from machine import Pin, Timer
 from uniesc import read_init, gen_test_data
 from wificon import wifi_connect, get_wlan_status, scan4ap, get_known_stations, save_profile, del_profile
-
+from boot import usbpwr, escpwr, onbled, rdled, blled, sw, usbpwr_atboot, sw_atboot, escpwr_atboot
 
 # blink timer
 timled = Timer()
