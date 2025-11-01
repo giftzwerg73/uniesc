@@ -52,6 +52,7 @@ class HW_MAX8_Module:
                           ["25%", "50%"],
                           ["Level1", "Level2", "Level3", "Level4", "Level5"],
                           ["0%", "2%", "4%", "6%", "8%", "10%", "12%", "14%", "16%"]]
+
         self.EscAuthor = "Author: MS, 03.10.2023"
         self.ItemNr = len(self.ItemName)
         self.ValNr = []
@@ -206,10 +207,4 @@ esclist.append(TM_WP8BL150_Module())
 esclist.append(TO_VORTEX_R8_Module())
 # arrma esc
 esclist.append(ARRMA_BLX185_Module())
-
-
-
-
-
-
 
